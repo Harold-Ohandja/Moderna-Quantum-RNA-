@@ -35,7 +35,7 @@ The main objectives of this project are:
 
 Predicting mRNA secondary structure is a crucial computational bottleneck in the design of mRNA-based therapeutics and vaccines. Traditional tools, such as **ViennaRNA**, rely on dynamic programming algorithms to identify Minimum Free Energy (MFE) structures under standard thermodynamic models. 
 
-This project explores a quantum optimization approach for mRNA folding by mapping base-pairing decisions to a Quadratic Unconstrained Binary Optimization (**QUBO**) model. Inspired directly by research from IBM Quantum and Moderna (*Alevras et al., arXiv:2405.20328*), we implement a **CVaR-VQE (Conditional Value at Risk Variational Quantum Eigensolver)** algorithm using a hardware-efficient ansatz. We benchmark the quantum predictions against classical MFE structures, evaluate energy gaps ($\Delta E$), and conduct a resource scaling analysis.
+This project explores a quantum optimization approach for mRNA folding by mapping base-pairing decisions to a Quadratic Unconstrained Binary Optimization (**QUBO**) model. Inspired directly by research from IBM Quantum and Moderna ([1] D. Alevras *et al.*, "mRNA secondary structure prediction using utility-scale quantum computers," *arXiv preprint*, arXiv:2405.20328, 2024. DOI: [10.48550/arXiv.2405.20328](https://doi.org/10.48550/arXiv.2405.20328).), we implement a **CVaR-VQE (Conditional Value at Risk Variational Quantum Eigensolver)** algorithm using a hardware-efficient ansatz. We benchmark the quantum predictions against classical MFE structures, evaluate energy gaps ($\Delta E$), and conduct a resource scaling analysis.
 
 ---
 
