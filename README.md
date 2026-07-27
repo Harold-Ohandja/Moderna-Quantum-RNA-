@@ -6,7 +6,7 @@
 ![License](https://img.shields.io/badge/License-MIT-yellow)
 
 > **WISER Global Quantum+AI Program 2026** | Challenge Moderna  
-> **Repository:** [`Moderna-Quantum-RNA`](https://github.com/Harold Ohandja/Moderna-Quantum-RNA)
+> **Repository:** [`Moderna-Quantum-RNA`](https://github.com/Harold-Ohandja/Moderna-Quantum-RNA)
 
 ---
 ## Team
