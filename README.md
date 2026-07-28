@@ -35,7 +35,7 @@ The main objectives of this project are:
 
 Predicting mRNA secondary structure is a crucial computational bottleneck in the design of mRNA-based therapeutics and vaccines. Traditional tools, such as **ViennaRNA**, rely on dynamic programming algorithms to identify Minimum Free Energy (MFE) structures under standard thermodynamic models. 
 
-This project explores a quantum optimization approach for mRNA folding by mapping base-pairing decisions to a Quadratic Unconstrained Binary Optimization (**QUBO**) model. Inspired directly by research from IBM Quantum and Moderna ([[1](#1-alevras-et-al-2024)].D. Alevras *et al.*, "mRNA secondary structure prediction using utility-scale quantum computers," *arXiv preprint*, arXiv:2405.20328, 2024. DOI: [10.48550/arXiv.2405.20328](https://doi.org/10.48550/arXiv.2405.20328).), we implement a **CVaR-VQE (Conditional Value at Risk Variational Quantum Eigensolver)** algorithm using a hardware-efficient ansatz. We benchmark the quantum predictions against classical MFE structures, evaluate energy gaps ($\Delta E$), and conduct a resource scaling analysis.
+This project explores a quantum optimization approach for mRNA folding by mapping base-pairing decisions to a Quadratic Unconstrained Binary Optimization (**QUBO**) model. Inspired directly by research from IBM Quantum and Moderna [[1](#1-alevras-et-al-2024)], we implement a **CVaR-VQE (Conditional Value at Risk Variational Quantum Eigensolver)** algorithm using a hardware-efficient ansatz. We benchmark the quantum predictions against classical MFE structures, evaluate energy gaps ($\Delta E$), and conduct a resource scaling analysis.
 
 ---
 
@@ -51,12 +51,12 @@ The total Hamiltonian combines thermodynamic binding energies with penalty const
 
 $$H_{\text{total}} = H_{\text{energy}} + H_{\text{overlap}} + H_{\text{pseudoknots}}$$
 
-* **Thermodynamic Energy ($H_{\text{energy}}$):** Favors stable pairings ($\text{G-C} < \text{A-U} < \text{G-U}$) and accounts for stacking bonuses[cite: 1].
-* **Overlap Constraint ($H_{\text{overlap}}$):** Penalizes configurations where a single base forms multiple bonds ($P_{\text{overlap}} \cdot x_{k_1} x_{k_2}$)[cite: 1].
-* **Pseudoknot Exclusion ($H_{\text{pseudoknots}}$):** Penalizes crossing pairs $(i_1 < i_2 < j_1 < j_2)$ to maintain nested secondary structures[cite: 1].
+* **Thermodynamic Energy ($H_{\text{energy}}$):** Favors stable pairings ($\text{G-C} < \text{A-U} < \text{G-U}$) and accounts for stacking bonuses[[1](#1-alevras-et-al-2024)].
+* **Overlap Constraint ($H_{\text{overlap}}$):** Penalizes configurations where a single base forms multiple bonds ($P_{\text{overlap}} \cdot x_{k_1} x_{k_2}$)[[1](#1-alevras-et-al-2024)].
+* **Pseudoknot Exclusion ($H_{\text{pseudoknots}}$):** Penalizes crossing pairs $(i_1 < i_2 < j_1 < j_2)$ to maintain nested secondary structures[[1](#1-alevras-et-al-2024)].
 
 ### 3. CVaR-VQE Algorithm
-Standard VQE minimizes expected energy over all samples, which can struggle in rugged combinatorial landscapes[cite: 1]. We employ **CVaR-VQE**, optimizing only the expectation value of the best $\alpha$-quantile ($\alpha = 0.1$) of sampled bitstrings, drastically accelerating convergence toward the ground state[cite: 1].
+Standard VQE minimizes expected energy over all samples, which can struggle in rugged combinatorial landscapes[[1](#1-alevras-et-al-2024)]. We employ **CVaR-VQE**, optimizing only the expectation value of the best $\alpha$-quantile ($\alpha = 0.1$) of sampled bitstrings, drastically accelerating convergence toward the ground state[[1](#1-alevras-et-al-2024)].
 
 ---
 
