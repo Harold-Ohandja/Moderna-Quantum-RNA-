@@ -114,8 +114,6 @@ conda env create -f environment.yml
 conda activate moderna-quantum-rna
 ```
 
----
-
 ##  Usage
 
 ### 1. Run Classical ViennaRNA Benchmark
@@ -128,7 +126,6 @@ python classical/benchmark.py --sequence "AUGCAU..."
 python quantum/vqe_solver.py --sequence "AUGCAU..." --alpha 0.1
 ```
 
----
 ##  License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
