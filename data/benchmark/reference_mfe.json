@@ -1,1 +1,14 @@
-
+{
+  "toy_sequence_10nt": {
+    "sequence": "GCGCAUACGC",
+    "length": 10,
+    "mfe_structure": "((....))",
+    "mfe_energy_kcal": -0.40
+  },
+  "official_moderna_44nt": {
+    "sequence": "GGAGCAAAACUUGUCGAUUGAGAACAAAAUACAGAAUUUGCUUG",
+    "length": 44,
+    "mfe_structure": "((((((.((((((((...))))))))(((((...))))))))))",
+    "mfe_energy_kcal": -13.10
+  }
+}
