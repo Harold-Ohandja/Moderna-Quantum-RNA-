@@ -51,12 +51,12 @@ The total Hamiltonian combines thermodynamic binding energies with penalty const
 
 $$H_{\text{total}} = H_{\text{energy}} + H_{\text{overlap}} + H_{\text{pseudoknots}}$$
 
-* **Thermodynamic Energy ($H_{\text{energy}}$):** Favors stable pairings ($\text{G-C} < \text{A-U} < \text{G-U}$) and accounts for stacking bonuses[[1](#1-alevras-et-al-2024)].
-* **Overlap Constraint ($H_{\text{overlap}}$):** Penalizes configurations where a single base forms multiple bonds ($P_{\text{overlap}} \cdot x_{k_1} x_{k_2}$)[[1](#1-alevras-et-al-2024)].
-* **Pseudoknot Exclusion ($H_{\text{pseudoknots}}$):** Penalizes crossing pairs $(i_1 < i_2 < j_1 < j_2)$ to maintain nested secondary structures[[1](#1-alevras-et-al-2024)].
+* **Thermodynamic Energy ($H_{\text{energy}}$):** Favors stable pairings ($\text{G-C} < \text{A-U} < \text{G-U}$) and accounts for stacking bonuses [[1](#1-alevras-et-al-2024)].
+* **Overlap Constraint ($H_{\text{overlap}}$):** Penalizes configurations where a single base forms multiple bonds ($P_{\text{overlap}} \cdot x_{k_1} x_{k_2}$) [[1](#1-alevras-et-al-2024)].
+* **Pseudoknot Exclusion ($H_{\text{pseudoknots}}$):** Penalizes crossing pairs $(i_1 < i_2 < j_1 < j_2)$ to maintain nested secondary structures [[1](#1-alevras-et-al-2024)].
 
 ### 3. CVaR-VQE Algorithm
-Standard VQE minimizes expected energy over all samples, which can struggle in rugged combinatorial landscapes[[1](#1-alevras-et-al-2024)]. We employ **CVaR-VQE**, optimizing only the expectation value of the best $\alpha$-quantile ($\alpha = 0.1$) of sampled bitstrings, drastically accelerating convergence toward the ground state[[1](#1-alevras-et-al-2024)].
+Standard VQE minimizes expected energy over all samples, which can struggle in rugged combinatorial landscapes [[1](#1-alevras-et-al-2024)]. We employ **CVaR-VQE**, optimizing only the expectation value of the best $\alpha$-quantile ($\alpha = 0.1$) of sampled bitstrings, drastically accelerating convergence toward the ground state [[1](#1-alevras-et-al-2024)].
 
 ---
 
