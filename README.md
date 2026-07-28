@@ -35,7 +35,7 @@ The main objectives of this project are:
 
 Predicting mRNA secondary structure is a crucial computational bottleneck in the design of mRNA-based therapeutics and vaccines. Traditional tools, such as **ViennaRNA**, rely on dynamic programming algorithms to identify Minimum Free Energy (MFE) structures under standard thermodynamic models. 
 
-This project explores a quantum optimization approach for mRNA folding by mapping base-pairing decisions to a Quadratic Unconstrained Binary Optimization (**QUBO**) model. Inspired directly by research from IBM Quantum and Moderna ([1] D. Alevras *et al.*, "mRNA secondary structure prediction using utility-scale quantum computers," *arXiv preprint*, arXiv:2405.20328, 2024. DOI: [10.48550/arXiv.2405.20328](https://doi.org/10.48550/arXiv.2405.20328).), we implement a **CVaR-VQE (Conditional Value at Risk Variational Quantum Eigensolver)** algorithm using a hardware-efficient ansatz. We benchmark the quantum predictions against classical MFE structures, evaluate energy gaps ($\Delta E$), and conduct a resource scaling analysis.
+This project explores a quantum optimization approach for mRNA folding by mapping base-pairing decisions to a Quadratic Unconstrained Binary Optimization (**QUBO**) model. Inspired directly by research from IBM Quantum and Moderna ([[1](#1-alevras-et-al-2024)].D. Alevras *et al.*, "mRNA secondary structure prediction using utility-scale quantum computers," *arXiv preprint*, arXiv:2405.20328, 2024. DOI: [10.48550/arXiv.2405.20328](https://doi.org/10.48550/arXiv.2405.20328).), we implement a **CVaR-VQE (Conditional Value at Risk Variational Quantum Eigensolver)** algorithm using a hardware-efficient ansatz. We benchmark the quantum predictions against classical MFE structures, evaluate energy gaps ($\Delta E$), and conduct a resource scaling analysis.
 
 ---
 
@@ -133,3 +133,23 @@ python quantum/vqe_solver.py --sequence "AUGCAU..." --alpha 0.1
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
+---
+
+##  References & Bibliography
+
+### 1. Alevras et al. (2024)
+Alevras, A., et al. *mRNA secondary structure prediction using utility-scale quantum computers*.  
+[arXiv:2405.20328 [quant-ph]](https://arxiv.org/abs/2405.20328)
+
+### 2. ViennaRNA Package
+Lorenz, R., Bernhart, S. H., Höner zu Siederdissen, C., Tafer, H., Flamm, C., Stadler, P. F., & Hofacker, I. L. (2011).  
+*ViennaRNA Package 2.0*. Algorithms for Molecular Biology, 6(1), 1-14.  
+[DOI: 10.1186/1748-7188-6-26](https://doi.org/10.1186/1748-7188-6-26)
+
+### 3. WISER Global Quantum+AI Program
+WISER Program 2026 - Challenge Moderna: *Quantum Optimization for Biological Sequences*.
+
+
+##  Acknowledgments
+
+We express our gratitude to the **WISER Global Quantum+AI Program 2026**, **Moderna**, and **IBM Quantum** for providing the challenge framework, reference models, and quantum computing resources.
