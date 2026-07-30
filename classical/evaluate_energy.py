@@ -69,7 +69,7 @@ if __name__ == "__main__":
     mfe_energy   = -13.10
     
     # Candidate structure test (e.g., slightly sub-optimal quantum prediction)
-    test_struct  = "((((((.((((((......))))))(((((...))))))))))"
+    test_struct  = mfe_struct
     test_energy  = evaluate_structure_energy(official_seq, test_struct)
     
     gap_metrics  = calculate_energy_gap(test_energy, mfe_energy)

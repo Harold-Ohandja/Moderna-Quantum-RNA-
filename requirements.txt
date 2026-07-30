@@ -1,9 +1,16 @@
-viennarna>=2.5.0
-qiskit>=1.0.0
-qiskit-algorithms>=0.3.0
-qiskit-aer>=0.13.0
+# RNA folding
+viennarna>=2.7.0
+
+# Qiskit ecosystem (Qiskit 2.5 compatible)
+qiskit>=2.5.0
+qiskit-algorithms>=0.4.0
+qiskit-aer>=0.17.0
+
+# Scientific computing
 numpy>=1.22.0
 pandas>=1.4.0
 scipy>=1.8.0
+
+# Visualization
 matplotlib>=3.5.0
 seaborn>=0.12.0
