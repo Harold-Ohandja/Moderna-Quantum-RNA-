@@ -1,14 +1,64 @@
 {
-  "toy_sequence_10nt": {
+  "GCGCAUACGC": {
     "sequence": "GCGCAUACGC",
     "length": 10,
-    "mfe_structure": "((....))",
-    "mfe_energy_kcal": -0.40
+    "mfe_structure": "(((....)))",
+    "mfe_energy": -1.2999999523162842,
+    "eval_energy": -1.3,
+    "candidate_pairs": [
+      [
+        0,
+        5
+      ],
+      [
+        0,
+        7
+      ],
+      [
+        0,
+        9
+      ],
+      [
+        1,
+        8
+      ],
+      [
+        2,
+        7
+      ],
+      [
+        2,
+        9
+      ],
+      [
+        3,
+        8
+      ]
+    ],
+    "num_pairs": 7,
+    "qubo_size": 26
   },
-  "official_moderna_44nt": {
-    "sequence": "GGAGCAAAACUUGUCGAUUGAGAACAAAAUACAGAAUUUGCUUG",
-    "length": 44,
-    "mfe_structure": "((((((.((((((((...))))))))(((((...))))))))))",
-    "mfe_energy_kcal": -13.10
+  "AUGCAUGC": {
+    "sequence": "AUGCAUGC",
+    "length": 8,
+    "mfe_structure": "........",
+    "mfe_energy": 0.0,
+    "eval_energy": 0.0,
+    "candidate_pairs": [
+      [
+        0,
+        5
+      ],
+      [
+        1,
+        6
+      ],
+      [
+        2,
+        7
+      ]
+    ],
+    "num_pairs": 3,
+    "qubo_size": 6
   }
 }
