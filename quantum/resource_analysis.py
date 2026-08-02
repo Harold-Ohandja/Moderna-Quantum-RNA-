@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 # Internal module imports
 from classical.utils import generate_random_rna
 from quantum.qubo import build_qubo_matrix
-from quantum.hamiltonian import qubo_to_ising
+from quantum.hamiltonian import qubo_to_hamiltonian
 
 
 def run_scaling_analysis(
@@ -44,7 +44,8 @@ def run_scaling_analysis(
         num_qubits = num_variables
         
         # 2. Convert to Ising Hamiltonian
-        hamiltonian, offset = qubo_to_ising(qubo_dict, num_qubits)
+        
+        hamiltonian = qubo_to_hamiltonian(qubo_dict, num_qubits)
         
         build_time = time.time() - start_time
         
