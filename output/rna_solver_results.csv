@@ -1,0 +1,3 @@
+timestamp,sequence,method,decoded_structure,active_pairs,energy,qubo_cost,notes
+2026-08-03T15:48:47,GCGCAUACGC,brute_force,(((....))),"[(0, 9), (1, 8), (2, 7)]",-1.3,-6.0,Validated exact solver and decoder on toy benchmark.
+2026-08-03T15:48:47,CUACGGCGCGGCGCCCUUGGCGA,heuristic,(((.((((...)).)).)))...,"[(0, 19), (1, 18), (2, 17), (4, 15), (5, 14), (6, 12), (7, 11)]",-2.2,-13.0,Heuristic solver used because brute force is too slow on this length.
