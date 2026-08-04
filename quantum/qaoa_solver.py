@@ -8,6 +8,13 @@ directly contrasted with the CVaR-VQE solver in vqe_solver.py.
 
 from typing import Callable, Dict, List, Optional, Tuple
 
+import os
+import sys
+
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if ROOT not in sys.path:
+    sys.path.insert(0, ROOT)
+
 import numpy as np
 from qiskit_aer import AerSimulator
 from qiskit_aer.primitives import SamplerV2
@@ -104,16 +111,29 @@ def solve_qaoa(
 
 
 if __name__ == "__main__":
-    import sys
-    sys.path.insert(0, ".")
+    import argparse
     from quantum.qubo import build_qubo_matrix
     import RNA
 
-    seq = "GCGCAUACGC"
+    parser = argparse.ArgumentParser(description="Run the QAOA RNA folding solver")
+    parser.add_argument("--sequence", type=str, default="GCGCAUACGC", help="RNA sequence")
+    parser.add_argument("--reps", type=int, default=2, help="QAOA depth (p)")
+    parser.add_argument("--maxiter", type=int, default=150, help="Max COBYLA iterations")
+    parser.add_argument(
+        "--cvar-alpha", type=float, default=None,
+        help="If set, uses CVaR-QAOA at this alpha instead of plain QAOA",
+    )
+    parser.add_argument("--seed", type=int, default=42, help="Seed, for reproducibility")
+    args = parser.parse_args()
+
+    seq = args.sequence.strip().upper()
     qubo, pairs = build_qubo_matrix(seq)
 
-    out = solve_qaoa(qubo, pairs, len(seq), seed=42)
-    print("QAOA structure:", out["structure"])
+    out = solve_qaoa(
+        qubo, pairs, len(seq),
+        reps=args.reps, maxiter=args.maxiter, aggregation=args.cvar_alpha, seed=args.seed,
+    )
+    print(f"{out['method']} structure:", out["structure"])
 
     ref_struct, ref_energy = RNA.fold(seq)
     fc = RNA.fold_compound(seq)

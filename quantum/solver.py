@@ -1,3 +1,15 @@
+"""
+Exact Brute-Force QUBO Solver.
+
+NOTE: despite living in the `quantum/` folder for now (alongside the actual
+quantum modules, for convenience), this file is a classical baseline, not a
+quantum or quantum-inspired algorithm. It exhaustively enumerates every
+bitstring, which is only feasible for small instances (a handful of
+qubits). It exists to provide a second classical ground-truth check
+(independent of ViennaRNA) for the QUBO formulation itself, and as a
+sanity check for the actual quantum solvers in vqe_solver.py / qaoa_solver.py.
+"""
+
 from itertools import product
 from typing import Dict, List, Tuple
 

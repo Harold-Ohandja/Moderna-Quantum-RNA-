@@ -8,6 +8,13 @@ than plain expectation-value VQE on rugged combinatorial landscapes.
 
 from typing import Callable, Dict, List, Optional, Tuple
 
+import os
+import sys
+
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if ROOT not in sys.path:
+    sys.path.insert(0, ROOT)
+
 import numpy as np
 from qiskit.circuit import QuantumCircuit
 from qiskit.circuit.library import n_local
@@ -119,15 +126,25 @@ def solve_cvar_vqe(
 
 
 if __name__ == "__main__":
-    import sys
-    sys.path.insert(0, ".")
+    import argparse
     from quantum.qubo import build_qubo_matrix
     import RNA
 
-    seq = "GCGCAUACGC"
+    parser = argparse.ArgumentParser(description="Run the CVaR-VQE RNA folding solver")
+    parser.add_argument("--sequence", type=str, default="GCGCAUACGC", help="RNA sequence")
+    parser.add_argument("--alpha", type=float, default=0.1, help="CVaR quantile (0 < alpha <= 1)")
+    parser.add_argument("--reps", type=int, default=2, help="Ansatz repetition depth")
+    parser.add_argument("--maxiter", type=int, default=150, help="Max COBYLA iterations")
+    parser.add_argument("--seed", type=int, default=42, help="Seed, for reproducibility")
+    args = parser.parse_args()
+
+    seq = args.sequence.strip().upper()
     qubo, pairs = build_qubo_matrix(seq)
 
-    out = solve_cvar_vqe(qubo, pairs, len(seq), alpha=0.1, seed=42)
+    out = solve_cvar_vqe(
+        qubo, pairs, len(seq),
+        alpha=args.alpha, reps=args.reps, maxiter=args.maxiter, seed=args.seed,
+    )
     print("CVaR-VQE structure:", out["structure"])
 
     ref_struct, ref_energy = RNA.fold(seq)

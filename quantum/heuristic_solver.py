@@ -1,3 +1,14 @@
+"""
+Greedy Local-Search Heuristic QUBO Solver.
+
+NOTE: this is a classical baseline, not a quantum or quantum-inspired
+algorithm (see the same note in quantum/solver.py). It's a multi-restart
+1-opt bit-flip hill climber, used when a sequence is too large for the
+exact brute-force solver in solver.py. Useful as a fast classical
+comparison point for larger sequences; not part of the quantum contribution.
+"""
+
+
 def qubo_cost(qubo, bits):
     cost = 0.0
     for (i, j), coeff in qubo.items():
