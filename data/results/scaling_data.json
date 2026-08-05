@@ -1,0 +1,102 @@
+[
+  {
+    "sequence_length": 6,
+    "sequence": "GCGCUC",
+    "num_candidate_pairs": 2,
+    "num_qubits": 2,
+    "estimated_circuit_depth": 5,
+    "qubo_terms_count": 3,
+    "formulation_time_sec": 0.00197,
+    "status": "Feasible for Local Simulation"
+  },
+  {
+    "sequence_length": 8,
+    "sequence": "UGGCUGAG",
+    "num_candidate_pairs": 4,
+    "num_qubits": 4,
+    "estimated_circuit_depth": 5,
+    "qubo_terms_count": 10,
+    "formulation_time_sec": 0.00078,
+    "status": "Feasible for Local Simulation"
+  },
+  {
+    "sequence_length": 10,
+    "sequence": "GAUGUACCUC",
+    "num_candidate_pairs": 9,
+    "num_qubits": 9,
+    "estimated_circuit_depth": 5,
+    "qubo_terms_count": 41,
+    "formulation_time_sec": 0.00665,
+    "status": "Feasible for Local Simulation"
+  },
+  {
+    "sequence_length": 12,
+    "sequence": "CUGUUUCUGUCC",
+    "num_candidate_pairs": 9,
+    "num_qubits": 9,
+    "estimated_circuit_depth": 5,
+    "qubo_terms_count": 37,
+    "formulation_time_sec": 0.0018,
+    "status": "Feasible for Local Simulation"
+  },
+  {
+    "sequence_length": 14,
+    "sequence": "AUGUCAGAGGCACA",
+    "num_candidate_pairs": 19,
+    "num_qubits": 19,
+    "estimated_circuit_depth": 5,
+    "qubo_terms_count": 146,
+    "formulation_time_sec": 0.01118,
+    "status": "Simulation Impractical (> 16 Qubits)"
+  },
+  {
+    "sequence_length": 16,
+    "sequence": "CCCACUUGGGUUGAAU",
+    "num_candidate_pairs": 30,
+    "num_qubits": 30,
+    "estimated_circuit_depth": 5,
+    "qubo_terms_count": 382,
+    "formulation_time_sec": 0.03865,
+    "status": "Simulation Impractical (> 16 Qubits)"
+  },
+  {
+    "sequence_length": 18,
+    "sequence": "GGCGCUUGAACCUACAUC",
+    "num_candidate_pairs": 37,
+    "num_qubits": 37,
+    "estimated_circuit_depth": 5,
+    "qubo_terms_count": 475,
+    "formulation_time_sec": 0.02324,
+    "status": "Simulation Impractical (> 16 Qubits)"
+  },
+  {
+    "sequence_length": 20,
+    "sequence": "CACUGGCCCAGCAAUUAGCC",
+    "num_candidate_pairs": 36,
+    "num_qubits": 36,
+    "estimated_circuit_depth": 5,
+    "qubo_terms_count": 464,
+    "formulation_time_sec": 0.01778,
+    "status": "Simulation Impractical (> 16 Qubits)"
+  },
+  {
+    "sequence_length": 22,
+    "sequence": "UAUACGCCAUUCAAUAACAAGC",
+    "num_candidate_pairs": 48,
+    "num_qubits": 48,
+    "estimated_circuit_depth": 5,
+    "qubo_terms_count": 768,
+    "formulation_time_sec": 0.09159,
+    "status": "Simulation Impractical (> 16 Qubits)"
+  },
+  {
+    "sequence_length": 24,
+    "sequence": "AGUCUGGAUCUCAGCUUAAUCGAA",
+    "num_candidate_pairs": 78,
+    "num_qubits": 78,
+    "estimated_circuit_depth": 5,
+    "qubo_terms_count": 1934,
+    "formulation_time_sec": 0.21696,
+    "status": "Simulation Impractical (> 16 Qubits)"
+  }
+]

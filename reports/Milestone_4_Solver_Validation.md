@@ -1,10 +1,10 @@
-# Day 4 Report — RNA QUBO Solver Validation
+# Milestone 4 Report — RNA QUBO Solver Validation
 
 ## Overview
-Day 4 focused on validating the RNA folding pipeline end-to-end and making the project usable beyond the smallest toy sequence. The main goal was to confirm that the QUBO formulation, solver, decoder, and classical energy evaluator all work together correctly, while also preparing the codebase for larger instances that are too expensive for brute-force search.
+Milestone 4 focused on validating the RNA folding pipeline end-to-end and making the project usable beyond the smallest toy sequence. The main goal was to confirm that the QUBO formulation, solver, decoder, and classical energy evaluator all work together correctly, while also preparing the codebase for larger instances that are too expensive for brute-force search.
 
 ## Objectives
-The goals for the day were:
+The goals for this milestone were:
 - Verify that the exact brute-force solver still works on the reference toy benchmark.
 - Check that the decoded bitstring maps back to the expected RNA secondary structure.
 - Confirm that the energy evaluator returns the expected classical folding energy.
@@ -24,7 +24,7 @@ To solve this, a separate heuristic solver path was added. Using the new heurist
 This result confirmed that the longer-sequence path works end-to-end and that the project can now handle both small exact benchmarks and larger approximate experiments.
 
 ## Code changes made
-The following files were added during Day 4:
+The following files were added during Milestone 4:
 - `quantum/heuristic_solver.py`
 - `quantum/hybrid_solver.py`
 - `scripts/run_solver.py`
@@ -42,7 +42,7 @@ The CSV file is intended to store one row per experiment, including sequence, so
 While implementing the heuristic path, one issue appeared because the QUBO was stored as a sparse dictionary rather than a dense matrix. The heuristic solver originally assumed row indexing and raised a `KeyError: 0`. This was fixed by updating the heuristic cost evaluation to iterate through `(i, j)` QUBO keys directly.
 
 ## Current project status
-By the end of Day 4:
+By the end of Milestone 4:
 - The exact solver works on the toy benchmark.
 - The decoder works and reproduces the expected dot-bracket structure.
 - The energy evaluator works and returns the expected value.
@@ -57,5 +57,5 @@ The next work items are:
 - Prepare summary tables and figures for the final report.
 - Continue building toward the quantum or hybrid solver implementation.
 
-## Day 4 summary
-Day 4 was successful because it moved the project from a single validated toy example to a more complete experimental workflow. The solver pipeline is now modular, reproducible, and ready for further comparison work.
+## Milestone 4 summary
+Milestone 4 was successful because it moved the project from a single validated toy example to a more complete experimental workflow. The solver pipeline is now modular, reproducible, and ready for further comparison work.

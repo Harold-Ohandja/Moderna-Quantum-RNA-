@@ -30,7 +30,7 @@ def run_scaling_analysis(
     scaling_results = []
 
     print("=================================================================")
-    print("       DAY 6: QUANTUM RESOURCE & SCALING ANALYSIS               ")
+    print("       MILESTONE 6: QUANTUM RESOURCE & SCALING ANALYSIS         ")
     print("=================================================================")
 
     for length in sequence_lengths:
@@ -49,8 +49,8 @@ def run_scaling_analysis(
         
         build_time = time.time() - start_time
         
-        # 3. Circuit Depth Estimation (TwoLocal ansatz with 2 reps)
-        # Depth formula for TwoLocal(ry, cz, linear, reps=2): ~ 2 * 2 + 1 = 5 layers
+        # 3. Circuit Depth Estimation (n_local ansatz, RY+CZ, reps=2 -- see quantum/vqe_solver.py)
+        # Depth formula for n_local(ry, cz, linear, reps=2): ~ 2 * 2 + 1 = 5 layers
         estimated_depth = 5 if num_qubits > 0 else 0
 
         # Determine Simulation Feasibility

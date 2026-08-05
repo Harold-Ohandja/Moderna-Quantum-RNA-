@@ -1,11 +1,11 @@
 
-# Moderna Challenge Report: Day 3 – Classical Benchmark Harness
+# Moderna Challenge Report: Milestone 2 – Classical Benchmark Harness
 
 **Project:** Optimization of mRNA Secondary Structure Prediction Using Quantum Computing  
 **Challenge:** WISER Global Quantum+AI Program 2026 — Moderna Challenge  
 **Team:** Pushkar Kumar and Harold  
 
-This report explains, in non-technical language where possible, what was achieved in the project’s "Day 3" milestone: building a small but complete benchmark tool that connects classical RNA structure prediction, a custom energy scorer, and a mathematical model used for quantum optimization.
+This report explains, in non-technical language where possible, what was achieved in the project’s "Milestone 2": building a small but complete benchmark tool that connects classical RNA structure prediction, a custom energy scorer, and a mathematical model used for quantum optimization.
 
 ---
 
@@ -18,7 +18,7 @@ To judge any quantum approach fairly, we need a **trusted classical baseline**:
 - A way to score other candidate structures and measure how far they are from this classical reference.
 - A way to connect those structures to the optimization model we use on the quantum side.
 
-Day 3 is about creating that baseline tool — a **benchmark harness**.
+Milestone 2 is about creating that baseline tool — a **benchmark harness**.
 
 The harness is a small program that:
 1. Takes a sequence.
@@ -168,7 +168,7 @@ In practical terms, this is now a "ground truth" file for short sequences.
 
 ## 5. How This Fits the Plan
 
-The internal project plan defined Day 3 as:
+The internal project plan defined Milestone 2 as:
 
 > "Build classical benchmark harness: RNA.fold() for MFE + eval_structure() for scoring any candidate. Validate on 2–3 test sequences."  
 > *(Moderna_Challenge_Team_Plan.pdf)*
@@ -179,7 +179,7 @@ The work completed matches this intent:
 - It runs and validates on two short sequences, with room for adding the 44-nt official sequence next.
 - It saves results to a `data/benchmark/` directory as structured JSON.
 
-This means the "Day 3" milestone — having a usable classical benchmark tool — is effectively complete.
+This means "Milestone 2" — having a usable classical benchmark tool — is effectively complete.
 
 ---
 
@@ -197,7 +197,7 @@ This foundation reduces risk: instead of experimenting blindly, we have a clear 
 
 ---
 
-## 7. Next Steps After Day 3
+## 7. Next Steps After Milestone 2
 
 With the classical benchmark harness in place, the next stages of the project will focus on:
 
@@ -213,7 +213,7 @@ These steps will build directly on the harness described here, without reinventi
 
 ## 8. Summary
 
-Day 3’s work has produced a small but complete classical benchmark harness for RNA secondary structure. It:
+Milestone 2’s work has produced a small but complete classical benchmark harness for RNA secondary structure. It:
 - Uses ViennaRNA to predict optimal folds.
 - Uses a custom module to evaluate energies and prepare gap metrics.
 - Uses a QUBO formulation to represent candidate base-pair choices.

@@ -1,8 +1,8 @@
-# Day 5 Report — Benchmark Automation and Solver Comparison
+# Milestone 5 Report — Benchmark Automation and Solver Comparison
 
 ## Summary
 
-Day 5 focused on automating benchmark execution for the RNA QUBO solver pipeline. The project now supports both exact and heuristic solving paths, enabling validation on short sequences and scalable testing on longer sequences.
+Milestone 5 focused on automating benchmark execution for the RNA QUBO solver pipeline. The project now supports both exact and heuristic solving paths, enabling validation on short sequences and scalable testing on longer sequences.
 
 ## Methods
 
@@ -18,7 +18,7 @@ The benchmark workflow was implemented in `scripts/run_day5_benchmarks.py`. Resu
 
 ## Benchmark Set
 
-The following sequences are included in the Day 5 benchmark batch:
+The following sequences are included in the Milestone 5 benchmark batch:
 
 - `GCGCAUACGC`
 - `GCGCGUACGC`
@@ -70,4 +70,4 @@ Future work should focus on:
 
 ## Status
 
-Day 5 introduces automated benchmarking and reproducible results tracking. The project is now set up for systematic experimentation rather than one-off manual runs.
+Milestone 5 introduces automated benchmarking and reproducible results tracking. The project is now set up for systematic experimentation rather than one-off manual runs.

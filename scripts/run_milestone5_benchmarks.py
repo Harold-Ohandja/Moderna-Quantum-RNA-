@@ -13,7 +13,7 @@ from classical.evaluate_energy import evaluate_structure_energy
 from quantum.hybrid_solver import solve_qubo_auto
 
 
-OUT_CSV = ROOT / "output" / "rna_solver_results_day5.csv"
+OUT_CSV = ROOT / "output" / "rna_solver_results_milestone5.csv"
 
 SEQUENCES = [
     "GCGCAUACGC",

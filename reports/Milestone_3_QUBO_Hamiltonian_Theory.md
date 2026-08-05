@@ -1,11 +1,11 @@
 
-# Moderna Challenge Report: Day 4 – Optimization Theory & Mapping
+# Moderna Challenge Report: Milestone 3 – Optimization Theory & Mapping
 
 **Project:** Optimization of mRNA Secondary Structure Prediction Using Quantum Computing  
 **Challenge:** WISER Global Quantum+AI Program 2026 — Moderna Challenge  
 **Team:** Pushkar Kumar and Harold  
 
-This report explains the theoretical foundation for the "Day 4" stage of the project: how the RNA folding problem is framed as a QUBO optimization model, how that QUBO is mapped to an Ising Hamiltonian for quantum algorithms such as CVaR-VQE, and how solutions (bitstrings) are decoded back into RNA secondary structures.
+This report explains the theoretical foundation for the "Milestone 3" stage of the project: how the RNA folding problem is framed as a QUBO optimization model, how that QUBO is mapped to an Ising Hamiltonian for quantum algorithms such as CVaR-VQE, and how solutions (bitstrings) are decoded back into RNA secondary structures.
 
 The goal is to present these ideas in a way that is understandable to non-specialists while still being precise enough for technical reviewers.
 
@@ -91,7 +91,7 @@ Instead of enforcing these as “hard rules,” the QUBO model adds penalty term
 
 An optimizer that is minimizing `C_{QUBO}` will naturally prefer solutions that avoid penalties, thereby respecting the constraints.
 
-This is consistent with the approach described in the IBM–Moderna reference work and the team’s Day 2 plan.
+This is consistent with the approach described in the IBM–Moderna reference work and the team’s Milestone 1b plan.
 
 ---
 
@@ -285,9 +285,9 @@ These metrics feed into the challenge’s judging criteria regarding approximati
 
 ---
 
-## 6. Summary of Day 4 Theory
+## 6. Summary of Milestone 3 Theory
 
-Day 4’s theoretical work establishes:
+Milestone 3’s theoretical work establishes:
 - A clear QUBO model for candidate base pairs, stacking, and constraints.
 - A standard mapping from QUBO to an Ising Hamiltonian suitable for VQE/CVaR-VQE.
 - A precise decoding pipeline from solver bitstrings back to dot-bracket RNA structures.

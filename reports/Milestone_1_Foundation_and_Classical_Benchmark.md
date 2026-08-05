@@ -1,5 +1,5 @@
 
-# Moderna Challenge Report: Day 1–2 Progress
+# Moderna Challenge Report: Milestone 1 – Foundation & Classical Benchmark Progress
 
 **Project:** Optimization of mRNA Secondary Structure Prediction Using Quantum Computing  
 **Challenge:** WISER Global Quantum+AI Program 2026 — Moderna Challenge  
@@ -11,8 +11,8 @@
 This project targets the Moderna WISER challenge of predicting RNA secondary structure with a quantum or quantum-inspired optimization method and benchmarking results against ViennaRNA minimum free energy (MFE) folding. The goal is not to outperform classical methods, but to reproduce known structures on short RNA sequences and analyze how the computational cost scales with sequence length.
 
 The work completed so far covers the first two stages of the plan:
-- Day 1: classical benchmarking with ViennaRNA.
-- Day 2: QUBO formulation with candidate base-pair variables, stacking rewards, and structural constraints.
+- Milestone 1a: classical benchmarking with ViennaRNA.
+- Milestone 1b: QUBO formulation with candidate base-pair variables, stacking rewards, and structural constraints.
 
 ## 2. Challenge Framing
 
@@ -50,7 +50,7 @@ The repository is still being built toward the ideal structure described in the 
 
 This means the README is currently more ambitious than the codebase. That is fine at this stage, as long as the implementation continues to close the gap step by step.
 
-## 4. Day 1 Work: Classical Benchmarking
+## 4. Milestone 1a Work: Classical Benchmarking
 
 The first milestone was to verify that ViennaRNA works correctly in the local environment and can generate MFE structures and energies.
 
@@ -81,10 +81,10 @@ The current script prints the following reference output:
 
 This gives the project a direct classical reference point for the challenge’s official example sequence.
 
-### 4.4 Day 1 conclusion
-Day 1 is effectively complete. ViennaRNA is functioning correctly, classical MFE references are available, and the energy evaluator agrees with the toy benchmark output.
+### 4.4 Milestone 1a conclusion
+Milestone 1a is effectively complete. ViennaRNA is functioning correctly, classical MFE references are available, and the energy evaluator agrees with the toy benchmark output.
 
-## 5. Day 2 Work: QUBO Formulation
+## 5. Milestone 1b Work: QUBO Formulation
 
 The second milestone was to define the optimization model for RNA secondary structure as a QUBO problem.
 
@@ -134,8 +134,8 @@ For the second short sequence:
 
 This confirms that the QUBO formulation responds naturally to sequence length and composition.
 
-### 5.6 Day 2 conclusion
-Day 2 is largely complete at the formulation level. The QUBO construction exists, works on more than one toy sequence, and captures the intended structural constraints.
+### 5.6 Milestone 1b conclusion
+Milestone 1b is largely complete at the formulation level. The QUBO construction exists, works on more than one toy sequence, and captures the intended structural constraints.
 
 ## 6. Classical Energy Evaluation
 
