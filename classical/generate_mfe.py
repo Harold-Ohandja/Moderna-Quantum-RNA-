@@ -9,7 +9,7 @@ official_seq = "GGAGCAAAACUUGUCGAUUGAGAACAAAAUACAGAAUUUGCUUG"
 official_struct, official_mfe = RNA.fold(official_seq)
 
 print("==================================================")
-print("          DAY 1: CLASSICAL BENCHMARK              ")
+print("         MILESTONE 1: CLASSICAL BENCHMARK         ")
 print("==================================================")
 print(f"1. TOY SEQUENCE ({len(toy_seq)} nt):")
 print(f"   Sequence  : {toy_seq}")

@@ -14,7 +14,7 @@ The benchmark script runs a fixed set of RNA sequences through the existing pipe
 4. Evaluate the decoded structure using the classical energy function.
 5. Record runtime and solver metadata in CSV format.
 
-The benchmark workflow was implemented in `scripts/run_day5_benchmarks.py`. Results are written to `output/rna_solver_results_day5.csv`.
+The benchmark workflow was implemented in `scripts/run_milestone5_benchmarks.py`. Results are written to `output/rna_solver_results_milestone5.csv`.
 
 ## Benchmark Set
 
@@ -43,7 +43,7 @@ The automated benchmark script records the following fields for each sequence:
 - runtime in seconds
 - notes
 
-This output is stored in `output/rna_solver_results_day5.csv` for later comparison and reporting.
+This output is stored in `output/rna_solver_results_milestone5.csv` for later comparison and reporting.
 
 ## Observations
 
