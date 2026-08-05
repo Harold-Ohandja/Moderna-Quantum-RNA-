@@ -42,6 +42,8 @@ Using `quantum/resource_analysis.py`, we evaluated how computational requirement
 ### 1. Qubit Requirements Scaling vs. Local Simulation Limits
 
 ![Quantum Variable Scaling vs RNA Length](figures/scaling_qubits_depth.png)
+![Figure 1](../figures/scaling_qubits_depth.png)
+![Figure 2](../figures/scaling_qubo_terms.png)
 
 *Figure 1: Scaling of required qubits (candidate base pairs) relative to RNA sequence length, highlighting the 16-qubit local statevector simulation threshold.*
 
