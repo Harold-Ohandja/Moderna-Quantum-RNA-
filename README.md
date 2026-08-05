@@ -30,13 +30,8 @@ The main objectives of this project are:
 
 ---
 
-# Quantum mRNA Secondary Structure Prediction Framework
 
-This repository contains an end-to-end framework developed for the **WISER Research Fellowship Challenge**, targeting mRNA secondary structure prediction using Quantum Optimization (QUBO, CVaR-VQE, QAOA) and classical benchmarking against thermodynamic ground truth (ViennaRNA MFE).
-
----
-
-## 📑 Executive Summary & Table of Contents
+##  Executive Summary & Table of Contents
 
 1. [Introduction](#1-introduction)
 2. [Methodology & QUBO Mapping](#2-methodology--qubo-mapping)
@@ -63,9 +58,9 @@ In this work, developed as part of the WISER Research Fellowship Challenge, we p
 * 
 
 ---
-# Theoretical Background and Related Work
+## 2.Theoretical Background and Related Work
 
-## RNA Secondary Structure and Representation
+### RNA Secondary Structure and Representation
 
 An RNA sequence is a linear polymer composed of four types of ribonucleotides: Adenine (A), Uracil (U), Cytosine (C), and Guanine (G). In an aqueous cellular environment, intramolecular hydrogen bonds form between non-adjacent complementary bases, causing the single-stranded chain to fold into a spatial configuration. Secondary structure refers to the ensemble of base pairs formed within the molecule.
 
@@ -85,7 +80,7 @@ The standard computational representation for secondary structures without pseud
 * An opening parenthesis `(` represents the $5'$ nucleotide of a base pair $(i, j)$ with $i < j$.
 * A closing parenthesis `)` represents the corresponding $3'$ nucleotide of the base pair at position $j$.
 
-## Thermodynamic Free-Energy Minimization Model
+### Thermodynamic Free-Energy Minimization Model
 
 Under classical thermodynamic theory (as implemented in the Nearest Neighbor Thermodynamic Model, NNTM), an RNA molecule folds into a configuration that minimizes its Gibbs free energy ($\Delta G$). The total free energy of a secondary structure $S$ is modeled as the sum of independent structural loop contributions:
 
