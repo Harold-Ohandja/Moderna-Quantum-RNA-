@@ -83,6 +83,41 @@ The standard computational representation for secondary structures without pseud
 * An opening parenthesis `(` represents the $5'$ nucleotide of a base pair $(i, j)$ with $i < j$.
 * A closing parenthesis `)` represents the corresponding $3'$ nucleotide of the base pair at position $j$.
 
+
+
+---
+### Classical Benchmark Generation & Structural Energy Evaluation
+
+To establish exact reference ground-truth structures, we utilize the official **ViennaRNA** Python package (`import RNA`). Classical MFE secondary structures and their corresponding free energies ($\Delta G_{\text{MFE}}$ in kcal/mol) are computed using `RNA.fold()`:
+
+```python
+import RNA
+
+sequence = "GGAGCAAAACUUGUCGAUUGAGAACAAAAUACAGAAUUUGCUUG"
+structure, mfe = RNA.fold(sequence)
+print(structure, mfe)
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ### Thermodynamic Free-Energy Minimization Model
 
 Under classical thermodynamic theory (as implemented in the Nearest Neighbor Thermodynamic Model, NNTM), an RNA molecule folds into a configuration that minimizes its Gibbs free energy ($\Delta G$). The total free energy of a secondary structure $S$ is modeled as the sum of independent structural loop contributions:
