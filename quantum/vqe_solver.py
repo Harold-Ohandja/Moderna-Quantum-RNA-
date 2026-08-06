@@ -56,6 +56,7 @@ def solve_cvar_vqe(
     optimizer: Optional[Optimizer] = None,
     seed: Optional[int] = None,
     callback: Optional[Callable] = None,
+    sampler=None,
 ) -> Dict:
     """
     Solves the RNA-folding QUBO with CVaR-VQE.
@@ -76,6 +77,15 @@ def solve_cvar_vqe(
         seed: Optional seed for the Aer sampler, for reproducibility.
         callback: Optional callback(eval_count, params, value, metadata)
             forwarded to SamplingVQE, useful for plotting convergence.
+        sampler: Optional pre-built sampler primitive. Defaults to a plain
+            noiseless Aer SamplerV2, i.e. exactly the previous behaviour.
+            Supplying one is how the noise-robustness study (notebook 05)
+            varies shot count and attaches an Aer NoiseModel, since shots and
+            noise are both properties of the sampler: SamplingVQE calls
+            sampler.run() without a shots argument, so the sampler's own
+            default_shots is what takes effect. When a sampler is passed,
+            `seed` still seeds the VQE initial point but no longer controls
+            shot randomness -- seed the sampler itself for that.
 
     Returns:
         Dict with the raw result, decoded structure, active pairs, best
@@ -85,7 +95,8 @@ def solve_cvar_vqe(
     hamiltonian = qubo_to_hamiltonian(qubo, num_qubits)
 
     ansatz = build_ansatz(num_qubits, reps=reps)
-    sampler = SamplerV2(seed=seed) if seed is not None else SamplerV2()
+    if sampler is None:
+        sampler = SamplerV2(seed=seed) if seed is not None else SamplerV2()
     opt = optimizer if optimizer is not None else COBYLA(maxiter=maxiter)
 
     # NOTE on reproducibility: SamplerV2's `seed` only controls measurement-shot
