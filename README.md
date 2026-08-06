@@ -1,24 +1,27 @@
-#  Optimization of mRNA Secondary Structure Prediction Using Quantum Computing 
+# Optimization of mRNA Secondary Structure Prediction Using Quantum Computing
 
 ![Python](https://img.shields.io/badge/Python-3.10%2B-blue)
 ![Qiskit](https://img.shields.io/badge/Qiskit-2.5%2B-purple)
 ![ViennaRNA](https://img.shields.io/badge/ViennaRNA-2.7%2B-green)
 ![License](https://img.shields.io/badge/License-MIT-yellow)
 
-> **WISER Global Quantum+AI Program 2026** | Challenge Moderna  
+> **WISER Global Quantum+AI Program 2026** — Moderna Challenge
 > **Repository:** [`Moderna-Quantum-RNA-`](https://github.com/Harold-Ohandja/Moderna-Quantum-RNA-)
 
+### ▶ [**Live interactive explainer →**](https://harold-ohandja.github.io/Moderna-Quantum-RNA-/)
+
+A one-page, no-install walkthrough of what this project does and what we found, built for a general audience. Open it first if you want the story before the code; read on for the full technical depth.
+
 ---
+
 ## Team
 
-- **Pushkar Kumar** — quantum/ML implementation lead: QUBO formulation, CVaR-VQE and QAOA solvers, notebooks
-- **Harold Ohandja** — classical solver track: brute-force/heuristic baselines, benchmark automation, resource analysis
+- **Pushkar Kumar** — quantum/ML implementation lead: QUBO formulation, CVaR-VQE and QAOA solvers, notebooks, web explainer.
+- **Harold Ohandja** — classical solver track: brute-force/heuristic baselines, benchmark automation, resource analysis.
 
 ---
 
 ## Objectives
-
-The main objectives of this project are:
 
 - Understand the biological principles of RNA secondary structure.
 - Generate classical benchmark structures using ViennaRNA.
@@ -28,205 +31,52 @@ The main objectives of this project are:
 - Compare quantum predictions against classical MFE structures.
 - Analyze the scalability and quantum resource requirements.
 
----
 ## High-Level Summary
-* **Biological Problem:** Predicting the 2D Minimum Free Energy (MFE) folding configuration of therapeutic mRNA sequences.
-* **Computational Challenge:** Classical exponential bottleneck when searching over complex configuration spaces and pseudoknotted secondary structures (NP-hard).
-* **Proposed Quantum Approach:** Constructing a QUBO base-pair interaction model solved using hybrid quantum-classical algorithms (`CVaR-VQE` and `QAOA`) in Qiskit.
----
 
-##  Table of Contents
+- **Biological problem:** predicting the 2D Minimum Free Energy (MFE) folding configuration of therapeutic mRNA sequences.
+- **Computational challenge:** the configuration space grows exponentially with sequence length, and once pseudoknots are allowed the problem becomes NP-hard.
+- **Proposed quantum approach:** a QUBO base-pair interaction model solved with hybrid quantum–classical algorithms (`CVaR-VQE` and `QAOA`) in Qiskit, benchmarked against ViennaRNA.
 
-1. [Introduction](#1-introduction)
-2. [Methodology & QUBO Mapping](#2-methodology--qubo-mapping)
-3. [Experimental Results & Benchmarking](#3-experimental-results--benchmarking)
-4. [Scaling and Quantum Resource Analysis](#4-scaling-and-quantum-resource-analysis)
-5. [Discussion](#5-discussion)
-6. [Conclusion and Future Work](#6-conclusion-and-future-work)
-7. [Repository Structure & Reproduction Commands](#7-repository-structure--reproduction-commands)
+> **Scope note:** the goal, per the challenge, is **not** to beat classical methods. It is to reproduce known structures for small sequences and understand how quantum resources scale with length.
+
+### Headline findings (documented honestly)
+
+- On some sequences (e.g. `GCGCAUACGC`) the quantum method reproduces the **exact** MFE structure, zero energy gap.
+- On others (e.g. `AUGCAUGC`, `GCAUCGUAGC`) **every** method misses, *including exhaustive brute force*. Because brute force cannot beat the QUBO it is given, this isolates a **QUBO formulation gap**, not a weak optimizer — the distinction a benchmark exists to reveal.
+- Under simulated shot noise and depolarizing gate noise, the correct fold **survives across the full range tested** (notebook 05).
 
 ---
 
-## 1. Introduction
+## Table of Contents
 
-Messenger RNA (mRNA) technologies have emerged as a revolutionary paradigm in modern medicine, enabling rapid development of therapeutic vaccines and targeted gene therapies. The biological functionality, cellular stability, and translation efficiency of an mRNA molecule are fundamentally governed by its secondary structure—the two-dimensional pattern of base pairs formed as the single-stranded nucleotide sequence folds onto itself. 
-
-Accurately predicting the minimum free energy (MFE) folding configuration of RNA is therefore essential for rational therapeutic design. Classically, exact structural prediction relies on dynamic programming algorithms (such as Zuker's algorithm or the Turner nearest-neighbor model implemented in tools like ViennaRNA). While classical algorithms effectively compute non-pseudoknotted nested structures in polynomial time $\mathcal{O}(L^3)$, incorporating complex tertiary interactions such as pseudoknots shifts the computational complexity into the NP-hard domain. 
-
-Quantum computing and Variational Quantum Algorithms (VQAs) offer a promising paradigm shift by mapping complex combinatorial optimization problems onto quantum hardware. By framing the RNA secondary structure folding problem as a Quadratic Unconstrained Binary Optimization (QUBO) model, candidate base pairs can be mapped directly to interacting spin systems (Ising Hamiltonians).
-
-In this work, developed as part of the WISER Research Fellowship Challenge, we present an end-to-end hybrid quantum-classical pipeline for mRNA secondary structure prediction. Our main contributions include:
-* **Mathematical QUBO Formulation:** Mapping potential canonical RNA base pairs (AU, GC, GU) into binary decision variables subject to thermodynamic stacking bonuses, loop constraints, and quadratic penalty terms for structural conflicts and pseudoknot exclusion.
-* **Quantum Algorithm Benchmarking:** Implementing and comparing Conditional Value at Risk VQE (`CVaR-VQE`) and the Quantum Approximate Optimization Algorithm (`QAOA`) built upon Qiskit Aer statevector execution, analyzing structural fidelity against classical ground truth generated by the ViennaRNA Python package (`import RNA`).
-* **Resource Scaling and Limit Diagnostic:** Performing an empirical scaling analysis of qubit count, circuit depth, parameter count, and execution runtime, providing critical diagnostics on QUBO model energy approximations vs. full thermodynamic nearest-neighbor models.
----
-
-## 2. Theoretical Background and Related Work
-
-### RNA Secondary Structure and Representation
-
-An RNA sequence is a linear polymer composed of four types of ribonucleotides: Adenine (A), Uracil (U), Cytosine (C), and Guanine (G). In an aqueous cellular environment, intramolecular hydrogen bonds form between non-adjacent complementary bases, causing the single-stranded chain to fold into a spatial configuration. Secondary structure refers to the ensemble of base pairs formed within the molecule.
-
-Valid base pairs typically include standard Watson-Crick pairs ($\text{A--U}$, $\text{C--G}$) and the weaker Wobble pair ($\text{G--U}$). Thermodynamically, secondary structures are composed of distinct structural motifs:
-
-* **Helices (Stems):** Consecutive, stacked base pairs that stabilize the molecule through base stacking interaction energy (shown in black).
-* **Hairpin Loops:** Unpaired regions enclosed by a single base pair at the end of a stem (highlighted in blue).
-* **Internal Loops and Bulges:** Unpaired nucleotides breaking the continuity of a double helix, depicted in green and yellow respectively.
-* **Multi-branched Junctions:** Regions where three or more double-stranded stems meet (highlighted in cyan).
-* **Pseudoknot Motifs:** Non-nested tertiary/secondary interactions involving crossing base pairs (highlighted in pink).
-
-![Key structural motifs forming RNA secondary and tertiary structures: helices, hairpin loops, bulges, internal loops, multi-branched loops, and pseudoknot patterns.](figures/fig1.png)
-
-The standard computational representation for secondary structures without pseudoknots is the *Dot-Bracket notation*. For a sequence of length $L$, the structure is expressed as a string of length $L$ over the alphabet $\{\text{.}, \text{(}, \text{)}\}$, where:
-
-* A dot `.` represents an unpaired nucleotide.
-* An opening parenthesis `(` represents the $5'$ nucleotide of a base pair $(i, j)$ with $i < j$.
-* A closing parenthesis `)` represents the corresponding $3'$ nucleotide of the base pair at position $j$.
-
-### Thermodynamic Free-Energy Minimization Model
-
-Under classical thermodynamic theory (as implemented in the Nearest Neighbor Thermodynamic Model, NNTM), an RNA molecule folds into a configuration that minimizes its Gibbs free energy ($\Delta G$). The total free energy of a secondary structure $S$ is modeled as the sum of independent structural loop contributions:
-
-$$\Delta G(S) = \Delta G_{\text{stems}}(S) + \Delta G_{\text{loops}}(S)$$
-
-Exact minimum free energy (MFE) determination without pseudoknots is routinely computed in $\mathcal{O}(L^3)$ time via dynamic programming algorithms (e.g., Zuker and Nussinov algorithms implemented in ViennaRNA). However, when non-nested interactions (pseudoknots) or complex non-local constraints are included, energy minimization becomes NP-hard.
-
-### Quantum Optimization Methods (QUBO, CVaR-VQE, and QAOA)
-
-To solve the RNA folding problem on quantum hardware, candidate base pairs are framed as a Quadratic Unconstrained Binary Optimization (QUBO) problem. Each candidate pair $(u, v)$ is assigned a binary decision variable $x_i \in \{0, 1\}$ ($1$ if paired, $0$ otherwise). 
-
-The QUBO cost function:
-$$H(\mathbf{x}) = \sum_{i} Q_{ii} x_i + \sum_{i < j} Q_{ij} x_i x_j$$
-is mapped directly into an Ising Spin Hamiltonian using the Pauli operator transformation $x_i \to \frac{I - Z_i}{2}$.
-
-Two primary Variational Quantum Algorithms (VQAs) are utilized to locate the ground state:
-
-* **CVaR-VQE (Conditional Value-at-Risk VQE):** A modified VQE algorithm where the loss function evaluates only the top $\alpha$-percentile (e.g., $\alpha = 0.1$) of lowest-energy measured bitstrings per iteration. This mitigates noise on NISQ hardware and accelerates convergence past local minima.
-* **QAOA (Quantum Approximate Optimization Algorithm):** A parameterized circuit alternating between a problem Hamiltonian $H_C$ and a mixing Hamiltonian $H_M$ over $p$ layers, designed specifically for combinatorial optimization tasks.
-
-### 2.2 QUBO Objective Function
-The objective function to minimize is formulated as:
-$$H(\mathbf{x}) = \sum_{i} E_i x_i + \sum_{i < j} S_{ij} x_i x_j + P \sum_{(i,j) \in \text{Conflicts}} x_i x_j$$
-
-* **Base Pair Bias ($E_i$):** $E_{\text{pair}} = -1.0$ kcal/mol per formed pair.
-* **Stacking Bonus ($S_{ij}$):** $E_{\text{stack}} = -1.5$ kcal/mol for adjacent, nested base pairs.
-* **Conflict & Pseudoknot Penalty ($P$):** Penalty coefficient $P = +5.0$ applied when:
-  * Two pairs share a common base ($u_i = u_j$ or $v_i = v_j$).
-  * Two pairs cross in a pseudoknot pattern ($u_i < u_j < v_i < v_j$).
-
-### 2.3 Classical Reference Integration (ViennaRNA)
-Classical ground truth structures and energies ($\Delta G_{\text{MFE}}$) are extracted using the official ViennaRNA API:
-```python
-import RNA
-
-sequence = "GCGCAUACGC"
-fc = RNA.fold_compound(sequence)
-mfe_structure, mfe_energy = fc.mfe()
----
----
-
-## Executive Summary & Table of Contents
-
-1. [Introduction](#1-introduction)
-2. Background
-3. [Methodology & QUBO Mapping](#2-methodology--qubo-mapping)
-4. [Experimental Results & Benchmarking](#3-experimental-results--benchmarking)
-5. [Scaling and Quantum Resource Analysis](#4-scaling-and-quantum-resource-analysis)
-6. [Discussion](#5-discussion)
-7. [Conclusion and Future Work](#6-conclusion-and-future-work)
-8. [Repository Structure & Reproduction Commands](#7-repository-structure--reproduction-commands)
-
----
-##  Theoretical Background & QUBO Formulation
-
-### 1. Binary Variable Mapping
-Instead of mapping individual nucleotides to qubits, variables represent **candidate base pairs** $(i, j)$ that satisfy physical constraints ($\vert{}j - i\vert{} \ge 4$ and Watson-Crick / Wobble base pairing rules $\text{A-U, G-C, G-U}$).
-
-$$x_k = \begin{cases} 1 & \text{if candidate base pair } k = (i, j) \text{ forms} \\ 0 & \text{otherwise} \end{cases}$$
-
-### 2. Objective Function & Hamiltonian
-The total Hamiltonian combines thermodynamic binding energies with penalty constraints:
-
-$$H_{\text{total}} = H_{\text{energy}} + H_{\text{overlap}} + H_{\text{pseudoknots}}$$
-
-* **Thermodynamic Energy ($H_{\text{energy}}$):** Favors stable pairings ($\text{G-C} < \text{A-U} < \text{G-U}$) and accounts for stacking bonuses [[1](#1-alevras-et-al-2024)].
-* **Overlap Constraint ($H_{\text{overlap}}$):** Penalizes configurations where a single base forms multiple bonds ($P_{\text{overlap}} \cdot x_{k_1} x_{k_2}$) [[1](#1-alevras-et-al-2024)].
-* **Pseudoknot Exclusion ($H_{\text{pseudoknots}}$):** Penalizes crossing pairs $(i_1 < i_2 < j_1 < j_2)$ to maintain nested secondary structures [[1](#1-alevras-et-al-2024)].
-
-### 3. CVaR-VQE Algorithm
-Standard VQE minimizes expected energy over all samples, which can struggle in rugged combinatorial landscapes [[1](#1-alevras-et-al-2024)]. We employ **CVaR-VQE**, optimizing only the expectation value of the best $\alpha$-quantile ($\alpha = 0.1$) of sampled bitstrings, drastically accelerating convergence toward the ground state [[1](#1-alevras-et-al-2024)].
+1. [Getting Started](#getting-started)
+2. [Introduction](#1-introduction)
+3. [Theoretical Background and Related Work](#2-theoretical-background-and-related-work)
+4. [QUBO Formulation](#3-qubo-formulation)
+5. [Quantum Algorithms](#4-quantum-algorithms)
+6. [Repository Structure](#5-repository-structure)
+7. [What to Expect When You Run It](#6-what-to-expect-when-you-run-it)
+8. [Bonus / Optional Tasks](#7-bonus--optional-tasks)
+9. [References](#references)
 
 ---
 
-##  Repository Structure
+## Getting Started
 
-```text
-Moderna-Quantum-RNA-/
-├── README.md                     # Project summary and documentation
-├── LICENSE                       # MIT License
-├── requirements.txt              # Python dependencies (pip)
-├── environment.yml               # Conda environment configuration
-│
-├── data/
-│   └── benchmark/
-│       └── reference_mfe.json    # ViennaRNA reference outputs (auto-generated)
-│
-├── classical/
-│   ├── generate_mfe.py           # ViennaRNA MFE structure generation
-│   ├── evaluate_energy.py        # Energy gap (ΔE) calculator
-│   ├── benchmark.py              # Classical benchmark runner (CLI: --sequence)
-│   └── utils.py                  # Sequence generators & helpers
-│
-├── quantum/
-│   ├── qubo.py                   # QUBO matrix formulation & penalties
-│   ├── hamiltonian.py            # Ising Hamiltonian mapping
-│   ├── decode.py                 # Bitstring -> dot-bracket structure decoder
-│   ├── vqe_solver.py             # CVaR-VQE solver, primary quantum method (CLI)
-│   ├── qaoa_solver.py            # QAOA / CVaR-QAOA solver (CLI)
-│   ├── resource_analysis.py      # Qubit/circuit-depth scaling analysis
-│   ├── solver.py                 # Classical baseline: exact brute-force QUBO solver
-│   ├── heuristic_solver.py       # Classical baseline: greedy local-search solver
-│   └── hybrid_solver.py          # Auto-switches between the two classical baselines
-│
-├── notebooks/
-│   ├── 01_Classical_Benchmark.ipynb  # ViennaRNA baseline + QUBO formulation walkthrough
-│   ├── 02_CVaR_VQE_Solver.ipynb      # Primary quantum solver, with results & limitations
-│   ├── 03_QAOA_Comparison.ipynb      # QAOA vs. CVaR-VQE, encoding/tradeoff discussion
-│   ├── 04_Full_Comparison.ipynb      # All methods side by side — start here
-│   └── 05_Noise_Robustness.ipynb     # CVaR-VQE under shot + depolarizing noise (Aer, local)
-│
-├── scripts/
-│   ├── run_solver.py             # Run the classical baseline on one sequence (CLI)
-│   ├── run_milestone5_benchmarks.py  # Batch classical baseline runs -> CSV
-│   └── run_full_comparison.py    # All methods, all sequences, one combined CSV
-│
-├── output/                       # CSV/markdown results logs (generated by the scripts above)
-└── reports/                      # Milestone-by-milestone progress reports
-```
-
-Note: `quantum/solver.py`, `heuristic_solver.py`, and `hybrid_solver.py` are classical
-baselines (exact brute-force and greedy heuristic search), not quantum or
-quantum-inspired algorithms. They live in `quantum/` for now alongside the actual
-quantum solvers for convenience, and exist to give a second, independent classical
-comparison point on the exact same QUBO the quantum solvers use.
-## 🛠️ Getting Started
-
-### Option A: No terminal needed (recommended)
+### Option A — No terminal needed (recommended)
 
 Every notebook in `notebooks/` runs standalone on **Google Colab**:
 
 1. Open the notebook file on GitHub (e.g. `notebooks/04_Full_Comparison.ipynb`).
-2. Click the "Open in Colab" badge at the top (or open [colab.research.google.com](https://colab.research.google.com), then File → Open notebook → GitHub, and paste this repo's URL).
-3. Run the first cell (labeled "Setup"). It installs everything needed and clones the repo automatically.
-4. Then: Runtime → Run all.
+2. Click the **Open in Colab** badge at the top (or go to [colab.research.google.com](https://colab.research.google.com) → File → Open notebook → GitHub, and paste this repo's URL).
+3. Run the first cell (labeled **Setup**). It installs everything needed and clones the repo automatically — no restart required.
+4. Then: **Runtime → Run all**.
 
-That's the whole process, no installation, no command line. Results (tables, charts)
-appear inline in the notebook.
+No installation, no command line. Tables and charts appear inline.
 
-**If you only run one notebook, run `04_Full_Comparison.ipynb`** — it puts every
-method side by side on the same sequences.
+**If you open only one notebook, open [`04_Full_Comparison.ipynb`](notebooks/04_Full_Comparison.ipynb)** — it puts every method side by side on the same sequences and includes the structure-comparison visualization.
 
-### Option B: Running locally (for anyone comfortable with a terminal)
+### Option B — Running locally
 
 ```bash
 git clone https://github.com/Harold-Ohandja/Moderna-Quantum-RNA-.git
@@ -235,13 +85,197 @@ pip install -r requirements.txt
 ```
 
 Or with Conda:
+
 ```bash
 conda env create -f environment.yml
 conda activate moderna-quantum-rna
 ```
 
-Then either open the notebooks locally with `jupyter notebook`, or run any script
-directly from the repo root, for example:
+Then open the notebooks with `jupyter notebook`, or run any script from the repo root (see [What to Expect When You Run It](#6-what-to-expect-when-you-run-it)).
+
+---
+
+## 1. Introduction
+
+Messenger RNA (mRNA) technologies have emerged as a revolutionary paradigm in modern medicine, enabling rapid development of therapeutic vaccines and targeted gene therapies. The biological functionality, cellular stability, and translation efficiency of an mRNA molecule are fundamentally governed by its **secondary structure** — the two-dimensional pattern of base pairs formed as the single-stranded nucleotide sequence folds onto itself.
+
+Accurately predicting the minimum free energy (MFE) folding configuration of RNA is therefore essential for rational therapeutic design. Classically, exact structural prediction relies on dynamic programming algorithms (such as Zuker's algorithm or the Turner nearest-neighbor model implemented in tools like ViennaRNA). While classical algorithms effectively compute non-pseudoknotted nested structures in polynomial time $\mathcal{O}(L^3)$, incorporating complex tertiary interactions such as pseudoknots shifts the computational complexity into the NP-hard domain.
+
+Quantum computing and Variational Quantum Algorithms (VQAs) offer a promising paradigm shift by mapping complex combinatorial optimization problems onto quantum hardware. By framing the RNA secondary structure folding problem as a **Quadratic Unconstrained Binary Optimization (QUBO)** model, candidate base pairs can be mapped directly to interacting spin systems (Ising Hamiltonians).
+
+In this work, developed as part of the WISER Research Fellowship Challenge, we present an end-to-end hybrid quantum–classical pipeline for mRNA secondary structure prediction. Our main contributions include:
+
+- **Mathematical QUBO formulation:** mapping potential canonical RNA base pairs (AU, GC, GU) into binary decision variables subject to thermodynamic stacking bonuses, loop constraints, and quadratic penalty terms for structural conflicts and pseudoknot exclusion.
+- **Quantum algorithm benchmarking:** implementing and comparing Conditional Value-at-Risk VQE (`CVaR-VQE`) and the Quantum Approximate Optimization Algorithm (`QAOA`) built upon Qiskit Aer execution, analyzing structural fidelity against classical ground truth generated by the ViennaRNA Python package (`import RNA`).
+- **Resource scaling and limit diagnostic:** an empirical scaling analysis of qubit count, circuit depth, parameter count, and execution runtime, providing critical diagnostics on QUBO model energy approximations vs. full thermodynamic nearest-neighbor models.
+- **Noise robustness study:** evaluating whether the recovered structure survives finite-shot sampling and hardware-inspired depolarizing noise (simulation only).
+
+---
+
+## 2. Theoretical Background and Related Work
+
+### 2.1 RNA secondary structure and representation
+
+An RNA sequence is a linear polymer composed of four types of ribonucleotides: Adenine (A), Uracil (U), Cytosine (C), and Guanine (G). In an aqueous cellular environment, intramolecular hydrogen bonds form between non-adjacent complementary bases, causing the single-stranded chain to fold into a spatial configuration. Secondary structure refers to the ensemble of base pairs formed within the molecule.
+
+Valid base pairs typically include the standard Watson–Crick pairs (A–U, C–G) and the weaker wobble pair (G–U). Thermodynamically, secondary structures are composed of distinct structural motifs:
+
+- **Helices (stems):** consecutive, stacked base pairs that stabilize the molecule through base-stacking interaction energy.
+- **Hairpin loops:** unpaired regions enclosed by a single base pair at the end of a stem.
+- **Internal loops and bulges:** unpaired nucleotides breaking the continuity of a double helix.
+- **Multi-branched junctions:** regions where three or more double-stranded stems meet.
+- **Pseudoknot motifs:** non-nested tertiary/secondary interactions involving crossing base pairs (excluded from our initial model — see §3).
+
+![Illustration of an RNA secondary structure: nucleotide legend, base-pairing rules (A–U, C–G, and the G–U wobble), and the main motifs — hairpin loop, stem, bulge loop, internal loop, and multibranch loop — with the corresponding dot-bracket notation.](figures/img1.png)
+
+The standard computational representation for structures without pseudoknots is **dot-bracket notation**. For a sequence of length $L$, the structure is a string of length $L$ over the alphabet $\{\text{.}, \text{(}, \text{)}\}$:
+
+- A dot `.` represents an unpaired nucleotide.
+- An opening parenthesis `(` represents the $5'$ nucleotide of a base pair $(i, j)$ with $i < j$.
+- A closing parenthesis `)` represents the corresponding $3'$ nucleotide at position $j$.
+
+### 2.2 Thermodynamic free-energy minimization model
+
+Under classical thermodynamic theory (the Nearest-Neighbor Thermodynamic Model, NNTM), an RNA molecule folds into the configuration that minimizes its Gibbs free energy ($\Delta G$). The total free energy of a secondary structure $S$ is modeled as the sum of independent structural loop contributions:
+
+$$\Delta G(S) = \Delta G_{\text{stems}}(S) + \Delta G_{\text{loops}}(S)$$
+
+Exact MFE determination without pseudoknots is routinely computed in $\mathcal{O}(L^3)$ time via dynamic programming (e.g. Zuker and Nussinov algorithms, as implemented in ViennaRNA). However, when non-nested interactions (pseudoknots) or complex non-local constraints are included, energy minimization becomes NP-hard.
+
+### 2.3 Quantum optimization methods (QUBO, CVaR-VQE, QAOA)
+
+To solve the RNA folding problem on quantum hardware, candidate base pairs are framed as a QUBO problem. Each candidate pair $(u, v)$ is assigned a binary decision variable $x_i \in \{0, 1\}$ (1 if paired, 0 otherwise). The QUBO cost function
+
+$$H(\mathbf{x}) = \sum_{i} Q_{ii} x_i + \sum_{i < j} Q_{ij} x_i x_j$$
+
+is mapped directly into an Ising spin Hamiltonian using the Pauli operator transformation $x_i \to \tfrac{I - Z_i}{2}$.
+
+Two primary Variational Quantum Algorithms locate the ground state (see [§4](#4-quantum-algorithms) for detail): **CVaR-VQE** and **QAOA**.
+
+---
+
+## 3. QUBO Formulation
+
+### 3.1 Binary variable mapping
+
+Instead of mapping individual nucleotides to qubits, variables represent **candidate base pairs** $(i, j)$ that satisfy physical constraints ($|j - i| \ge 4$ and Watson–Crick / wobble base-pairing rules A–U, G–C, G–U):
+
+$$x_k = \begin{cases} 1 & \text{if candidate base pair } k = (i, j) \text{ forms} \\ 0 & \text{otherwise} \end{cases}$$
+
+### 3.2 Objective function and Hamiltonian
+
+The total Hamiltonian combines thermodynamic binding energies with penalty constraints:
+
+$$H_{\text{total}} = H_{\text{energy}} + H_{\text{overlap}} + H_{\text{pseudoknots}}$$
+
+Written explicitly as a QUBO:
+
+$$H(\mathbf{x}) = \sum_{i} E_i x_i + \sum_{i < j} S_{ij} x_i x_j + P \sum_{(i,j) \in \text{Conflicts}} x_i x_j$$
+
+- **Thermodynamic energy ($H_{\text{energy}}$):** favors stable pairings (G–C < A–U < G–U) and accounts for stacking bonuses [[1]](#1-alevras-et-al-2024).
+  - Base-pair bias: $E_{\text{pair}} = -1.0$ kcal/mol per formed pair.
+  - Stacking bonus: $S_{\text{stack}} = -1.5$ kcal/mol for adjacent, nested base pairs.
+- **Overlap constraint ($H_{\text{overlap}}$):** penalizes configurations where a single base forms multiple bonds, with penalty $P = +5.0$ applied when two pairs share a common base ($u_i = u_j$ or $v_i = v_j$) [[1]](#1-alevras-et-al-2024).
+- **Pseudoknot exclusion ($H_{\text{pseudoknots}}$):** penalizes crossing pairs ($i_1 < i_2 < j_1 < j_2$), with penalty $P = +5.0$, to keep structures nested [[1]](#1-alevras-et-al-2024).
+
+**On pseudoknots:** we deliberately exclude pseudoknots from this initial model via the non-crossing penalty above. This matches the assumption ViennaRNA's standard MFE algorithm makes, keeps the QUBO tractable with linear penalty terms, and is one of the challenge's explicitly permitted simplifications. A pseudoknot-aware formulation would require additional variables/constraints for crossing interactions, and is left as future work.
+
+### 3.3 Classical reference integration (ViennaRNA)
+
+Classical ground-truth structures and energies ($\Delta G_{\text{MFE}}$) are extracted using the official ViennaRNA API:
+
+```python
+import RNA
+
+sequence = "GCGCAUACGC"
+fc = RNA.fold_compound(sequence)
+mfe_structure, mfe_energy = fc.mfe()
+```
+
+---
+
+## 4. Quantum Algorithms
+
+Two Variational Quantum Algorithms are used to locate the QUBO ground state.
+
+### 4.1 CVaR-VQE (primary method)
+
+Standard VQE minimizes the expected energy over **all** measured samples, which can struggle in rugged combinatorial landscapes. **CVaR-VQE** (Conditional Value-at-Risk VQE) instead evaluates the loss on only the best $\alpha$-quantile of the lowest-energy sampled bitstrings each iteration (we use $\alpha = 0.1$). This mitigates noise on NISQ-style execution and accelerates convergence past local minima [[1]](#1-alevras-et-al-2024). This is our **primary** method, chosen to mirror the formulation in Moderna & IBM Quantum's own paper on this exact problem.
+
+- **Ansatz:** hardware-efficient `n_local` (RY rotations + CZ entanglers, linear entanglement), 2 repetitions.
+- **Optimizer:** classical outer loop (e.g. COBYLA) over the variational parameters.
+
+> **Implementation note (Qiskit 2.5):** the older `TwoLocal` construct is deprecated and fails under Aer; the code deliberately uses the `n_local` function instead. Any mention of `TwoLocal` in the repo explains *why it was avoided*, not that it is used.
+
+### 4.2 QAOA (comparison method)
+
+**QAOA** (Quantum Approximate Optimization Algorithm) is a parameterized circuit alternating between a problem Hamiltonian $H_C$ and a mixing Hamiltonian $H_M$ over $p$ layers, designed specifically for combinatorial optimization. We run both QAOA and a CVaR-flavored QAOA to compare encodings/ansätze against CVaR-VQE.
+
+### 4.3 What the comparison shows
+
+For a given sequence, **qubit count is fixed by the QUBO** (one qubit per candidate base pair), so it is identical across solvers — changing solver changes only the *search strategy*, not the resource requirement. Constraints are likewise enforced identically, as soft penalty terms inside the QUBO rather than in the circuit. The genuine contrast the solvers expose is in **ansatz structure and parameter count / circuit depth** (see notebook 03), and in convergence behavior.
+
+---
+
+## 5. Repository Structure
+
+```text
+Moderna-Quantum-RNA-/
+├── README.md
+├── LICENSE                       # MIT
+├── requirements.txt              # pip dependencies
+├── environment.yml               # Conda environment
+│
+├── docs/                         # Live web explainer (GitHub Pages)
+│   ├── index.html                #   self-contained interactive site
+│   └── data/results.json         #   values exported from notebooks 04 & 05
+│
+├── data/
+│   ├── benchmark/reference_mfe.json   # ViennaRNA reference outputs
+│   └── results/scaling_data.json      # resource-scaling data
+│
+├── classical/
+│   ├── generate_mfe.py           # ViennaRNA MFE structure generation
+│   ├── evaluate_energy.py        # energy-gap (ΔE) calculator
+│   ├── benchmark.py              # classical benchmark runner (CLI: --sequence)
+│   └── utils.py                  # sequence generators & helpers
+│
+├── quantum/
+│   ├── qubo.py                   # QUBO matrix formulation & penalties
+│   ├── hamiltonian.py            # Ising Hamiltonian mapping
+│   ├── decode.py                 # bitstring → dot-bracket structure decoder
+│   ├── vqe_solver.py             # PRIMARY quantum method: CVaR-VQE (CLI)
+│   ├── qaoa_solver.py            # QAOA / CVaR-QAOA solver (CLI)
+│   ├── resource_analysis.py      # qubit / circuit-depth scaling analysis
+│   ├── visualize.py              # arc-diagram structure comparison
+│   ├── solver.py                 # classical baseline: exact brute-force QUBO solver
+│   ├── heuristic_solver.py       # classical baseline: greedy local-search solver
+│   └── hybrid_solver.py          # auto-switches between the two classical baselines
+│
+├── notebooks/
+│   ├── 01_Classical_Benchmark.ipynb   # ViennaRNA baseline + QUBO formulation walkthrough
+│   ├── 02_CVaR_VQE_Solver.ipynb       # primary quantum solver, with results & limitations
+│   ├── 03_QAOA_Comparison.ipynb       # QAOA vs. CVaR-VQE, encoding/tradeoff discussion
+│   ├── 04_Full_Comparison.ipynb       # ★ all methods side by side — start here
+│   └── 05_Noise_Robustness.ipynb      # CVaR-VQE under shot + depolarizing noise (Aer, local)
+│
+├── scripts/
+│   ├── run_solver.py             # run the classical baseline on one sequence (CLI)
+│   ├── run_milestone5_benchmarks.py  # batch classical baseline runs → CSV
+│   └── run_full_comparison.py    # all methods, all sequences → one combined CSV
+│
+├── figures/                      # generated scaling figures + the motif illustration
+├── output/                       # CSV / markdown result logs (produced by the scripts)
+└── reports/                      # milestone-by-milestone progress reports
+```
+
+> **Note:** `quantum/solver.py`, `heuristic_solver.py`, and `hybrid_solver.py` are **classical** baselines (exact brute-force and greedy heuristic search), not quantum or quantum-inspired algorithms. They live in `quantum/` alongside the real quantum solvers for convenience, and exist to give a second, independent classical comparison point on the exact same QUBO the quantum solvers use — which is precisely what lets us distinguish a formulation gap from a solver failure.
+
+---
+
+## 6. What to Expect When You Run It
+
+Every command prints the decoded structure, its energy, and how it compares to ViennaRNA's reference MFE.
 
 ```bash
 # Classical ViennaRNA benchmark on one sequence
@@ -253,36 +287,45 @@ python quantum/vqe_solver.py --sequence "GCGCAUACGC" --alpha 0.1
 # Comparison quantum solver (QAOA)
 python quantum/qaoa_solver.py --sequence "GCGCAUACGC"
 
-# Everything at once (classical baseline + both quantum solvers), one combined table
+# Everything at once (both classical baselines + both quantum solvers), one combined table
 python scripts/run_full_comparison.py
 ```
 
-**What to expect:** each command prints the decoded structure, its energy, and how
-it compares to ViennaRNA's reference MFE. `run_full_comparison.py` is the most
-informative single command, it takes under 15 seconds and writes a combined CSV to
-`output/full_comparison_results.csv` alongside the printed table.
+`run_full_comparison.py` is the most informative single command: it runs in well under a minute and writes a combined table to `output/full_comparison_results.csv` alongside the printed output.
 
-##  License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+**Reading the results:** a `gap_kcal` of `0.0` with `match = True` means the method reproduced ViennaRNA's exact MFE structure. A non-zero gap means it found a higher-energy (worse) structure. On the sequences where *every* method — including exact brute force — shows the same non-zero gap, that is the documented **formulation gap**: the QUBO's simplified energy model, not the optimizer, is the limiting factor.
 
 ---
 
-##  References & Bibliography
+## 7. Bonus / Optional Tasks
+
+The challenge lists three optional advanced tasks. Status in this repo:
+
+- **Pseudoknot handling — done.** Pseudoknots are explicitly excluded via the non-crossing penalty, with the reasoning stated in [§3.2](#32-objective-function-and-hamiltonian) and in the notebooks/reports.
+- **Compare multiple encodings — partial.** `03_QAOA_Comparison.ipynb` compares CVaR-VQE and QAOA/CVaR-QAOA on the same QUBO and discusses qubit-count and constraint-enforcement tradeoffs ([§4.3](#43-what-the-comparison-shows)). Because all three share one encoding, those two axes come out identical; the real measured contrast is in ansatz structure and depth.
+- **Noise robustness — done.** `05_Noise_Robustness.ipynb` runs CVaR-VQE on the smallest sequence under finite-shot sampling and hardware-inspired depolarizing noise (local Aer simulation). Finding: the exact MFE is recovered across the full range tested.
+
+---
+
+## References
 
 ### 1. Alevras et al. (2024)
-Alevras, A., et al. *mRNA secondary structure prediction using utility-scale quantum computers*.  
+Alevras, A., et al. *mRNA secondary structure prediction using utility-scale quantum computers.*
 [arXiv:2405.20328 [quant-ph]](https://arxiv.org/abs/2405.20328)
 
 ### 2. ViennaRNA Package
-Lorenz, R., Bernhart, S. H., Höner zu Siederdissen, C., Tafer, H., Flamm, C., Stadler, P. F., & Hofacker, I. L. (2011).  
-*ViennaRNA Package 2.0*. Algorithms for Molecular Biology, 6(1), 1-14.  
+Lorenz, R., Bernhart, S. H., Höner zu Siederdissen, C., Tafer, H., Flamm, C., Stadler, P. F., & Hofacker, I. L. (2011). *ViennaRNA Package 2.0.* Algorithms for Molecular Biology, 6(1), 1–14.
 [DOI: 10.1186/1748-7188-6-26](https://doi.org/10.1186/1748-7188-6-26)
 
 ### 3. WISER Global Quantum+AI Program
-WISER Program 2026 - Challenge Moderna: *Quantum Optimization for Biological Sequences*.
+WISER Program 2026 — Moderna Challenge: *Optimization of mRNA Secondary Structure Prediction Using Quantum Computing.*
 
+---
 
-##  Acknowledgments
+## License
+
+This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
+
+## Acknowledgments
 
 We express our gratitude to the **WISER Global Quantum+AI Program 2026**, **Moderna**, and **IBM Quantum** for providing the challenge framework, reference models, and quantum computing resources.
