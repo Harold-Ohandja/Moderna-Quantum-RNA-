@@ -6,9 +6,14 @@ Identifies memory limits where local statevector simulation becomes impractical.
 
 import json
 import os
+import sys
 import time
 from typing import Dict, List
 import matplotlib.pyplot as plt
+
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if ROOT not in sys.path:
+    sys.path.insert(0, ROOT)
 
 # Internal module imports
 from classical.utils import generate_random_rna
@@ -81,7 +86,7 @@ def run_scaling_analysis(
         json.dump(scaling_results, f, indent=2)
         
     print("=================================================================")
-    print(f"✅ Scaling data saved to {json_path}")
+    print(f"[OK] Scaling data saved to {json_path}")
     
     return scaling_results
 
@@ -130,7 +135,7 @@ def generate_scaling_plots(json_path: str = "data/results/scaling_data.json"):
     plt.savefig(plot2_path, dpi=300)
     plt.close()
 
-    print(f"📊 Figures successfully saved to:\n   - {plot1_path}\n   - {plot2_path}")
+    print(f"[figures] Successfully saved to:\n   - {plot1_path}\n   - {plot2_path}")
 
 
 if __name__ == "__main__":
