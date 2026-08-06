@@ -1,0 +1,273 @@
+{
+  "meta": {
+    "challenge": "WISER Global Quantum+AI Program 2026 - Moderna Challenge",
+    "team": [
+      "Pushkar Kumar",
+      "Harold Ohandja"
+    ],
+    "primary_method": "CVaR-VQE",
+    "primary_method_params": {
+      "alpha": 0.1,
+      "ansatz": "n_local (RY + CZ, linear)",
+      "reps": 2
+    },
+    "reference_paper": "Alevras et al. 2024, arXiv:2405.20328",
+    "classical_reference": "ViennaRNA MFE",
+    "quantum_qubit_limit": 16,
+    "hardware_used": false,
+    "generated_from": {
+      "full_comparison": "notebooks/04_Full_Comparison.ipynb :: df",
+      "noise_study": "notebooks/05_Noise_Robustness.ipynb :: noise_df",
+      "generated_utc": "2026-08-06T06:40:15Z"
+    },
+    "findings": [
+      {
+        "sequence": "GCGCAUACGC",
+        "verdict": "exact_match",
+        "label": "all 3 methods reproduce the exact ViennaRNA MFE structure"
+      },
+      {
+        "sequence": "AUGCAUGC",
+        "verdict": "formulation_gap",
+        "label": "all methods miss, exact brute force included - QUBO formulation gap"
+      },
+      {
+        "sequence": "GCAUCGUAGC",
+        "verdict": "formulation_gap",
+        "label": "all methods miss, exact brute force included - QUBO formulation gap"
+      },
+      {
+        "sequence": "CUACGGCGCGGCGCCCUUGGCGA",
+        "verdict": "skipped",
+        "label": "87 qubits - beyond the local-simulation limit (16); classical heuristic only"
+      }
+    ]
+  },
+  "sequences": [
+    {
+      "sequence": "GCGCAUACGC",
+      "length": 10,
+      "num_qubits": 7,
+      "plotted": true,
+      "verdict": "exact_match",
+      "reference": {
+        "method": "ViennaRNA_MFE",
+        "structure": "(((....)))",
+        "energy_kcal": -1.3,
+        "pairs": [[0, 9], [1, 8], [2, 7]]
+      },
+      "methods": [
+        {
+          "method": "CVaR-VQE",
+          "is_primary": true,
+          "quantum": true,
+          "structure": "(((....)))",
+          "energy_kcal": -1.3,
+          "match": true,
+          "gap_kcal": 0.0,
+          "runtime_sec": 2.06,
+          "skipped": false,
+          "notes": "",
+          "pairs": [[0, 9], [1, 8], [2, 7]]
+        },
+        {
+          "method": "QAOA",
+          "is_primary": false,
+          "quantum": true,
+          "structure": "(((....)))",
+          "energy_kcal": -1.3,
+          "match": true,
+          "gap_kcal": 0.0,
+          "runtime_sec": 1.36,
+          "skipped": false,
+          "notes": "",
+          "pairs": [[0, 9], [1, 8], [2, 7]]
+        },
+        {
+          "method": "classical_brute_force",
+          "is_primary": false,
+          "quantum": false,
+          "structure": "(((....)))",
+          "energy_kcal": -1.3,
+          "match": true,
+          "gap_kcal": 0.0,
+          "runtime_sec": 0.0,
+          "skipped": false,
+          "notes": "not quantum, exact QUBO optimum",
+          "pairs": [[0, 9], [1, 8], [2, 7]]
+        }
+      ]
+    },
+    {
+      "sequence": "AUGCAUGC",
+      "length": 8,
+      "num_qubits": 3,
+      "plotted": true,
+      "verdict": "formulation_gap",
+      "reference": {
+        "method": "ViennaRNA_MFE",
+        "structure": "........",
+        "energy_kcal": 0.0,
+        "pairs": []
+      },
+      "methods": [
+        {
+          "method": "CVaR-VQE",
+          "is_primary": true,
+          "quantum": true,
+          "structure": "(....)..",
+          "energy_kcal": 5.3,
+          "match": false,
+          "gap_kcal": 5.3,
+          "runtime_sec": 0.43,
+          "skipped": false,
+          "notes": "",
+          "pairs": [[0, 5]]
+        },
+        {
+          "method": "QAOA",
+          "is_primary": false,
+          "quantum": true,
+          "structure": ".(....).",
+          "energy_kcal": 5.2,
+          "match": false,
+          "gap_kcal": 5.2,
+          "runtime_sec": 0.84,
+          "skipped": false,
+          "notes": "",
+          "pairs": [[1, 6]]
+        },
+        {
+          "method": "classical_brute_force",
+          "is_primary": false,
+          "quantum": false,
+          "structure": "..(....)",
+          "energy_kcal": 4.5,
+          "match": false,
+          "gap_kcal": 4.5,
+          "runtime_sec": 0.0,
+          "skipped": false,
+          "notes": "not quantum, exact QUBO optimum",
+          "pairs": [[2, 7]]
+        }
+      ]
+    },
+    {
+      "sequence": "GCAUCGUAGC",
+      "length": 10,
+      "num_qubits": 10,
+      "plotted": true,
+      "verdict": "formulation_gap",
+      "reference": {
+        "method": "ViennaRNA_MFE",
+        "structure": "..........",
+        "energy_kcal": 0.0,
+        "pairs": []
+      },
+      "methods": [
+        {
+          "method": "CVaR-VQE",
+          "is_primary": true,
+          "quantum": true,
+          "structure": "((.(...)))",
+          "energy_kcal": 4.2,
+          "match": false,
+          "gap_kcal": 4.2,
+          "runtime_sec": 4.32,
+          "skipped": false,
+          "notes": "",
+          "pairs": [[0, 9], [1, 8], [3, 7]]
+        },
+        {
+          "method": "QAOA",
+          "is_primary": false,
+          "quantum": true,
+          "structure": "((.(...)))",
+          "energy_kcal": 4.2,
+          "match": false,
+          "gap_kcal": 4.2,
+          "runtime_sec": 2.45,
+          "skipped": false,
+          "notes": "",
+          "pairs": [[0, 9], [1, 8], [3, 7]]
+        },
+        {
+          "method": "classical_brute_force",
+          "is_primary": false,
+          "quantum": false,
+          "structure": "((.(...)))",
+          "energy_kcal": 4.2,
+          "match": false,
+          "gap_kcal": 4.2,
+          "runtime_sec": 0.01,
+          "skipped": false,
+          "notes": "not quantum, exact QUBO optimum",
+          "pairs": [[0, 9], [1, 8], [3, 7]]
+        }
+      ]
+    },
+    {
+      "sequence": "CUACGGCGCGGCGCCCUUGGCGA",
+      "length": 23,
+      "num_qubits": 87,
+      "plotted": false,
+      "verdict": "skipped",
+      "reference": {
+        "method": "ViennaRNA_MFE",
+        "structure": "...........((((...)))).",
+        "energy_kcal": -5.0,
+        "pairs": [[11, 21], [12, 20], [13, 19], [14, 18]]
+      },
+      "methods": [
+        {
+          "method": "CVaR-VQE / QAOA",
+          "is_primary": false,
+          "quantum": true,
+          "structure": null,
+          "energy_kcal": null,
+          "match": null,
+          "gap_kcal": null,
+          "runtime_sec": null,
+          "skipped": true,
+          "notes": "skipped: 87 qubits exceeds local-sim limit (16)",
+          "pairs": []
+        },
+        {
+          "method": "classical_heuristic",
+          "is_primary": false,
+          "quantum": false,
+          "structure": "(((.((((...)).)).)))...",
+          "energy_kcal": -2.2,
+          "match": false,
+          "gap_kcal": 2.8,
+          "runtime_sec": 2.41,
+          "skipped": false,
+          "notes": "not quantum, approximate",
+          "pairs": [[0, 19], [1, 18], [2, 17], [4, 15], [5, 14], [6, 12], [7, 11]]
+        }
+      ]
+    }
+  ],
+  "noise_study": {
+    "sequence": "GCGCAUACGC",
+    "num_qubits": 7,
+    "alpha": 0.1,
+    "seeds": [11, 22, 33, 44, 55],
+    "total_runs": 35,
+    "reference_structure": "(((....)))",
+    "reference_energy_kcal": -1.3,
+    "hardware_used": false,
+    "simulator": "qiskit-aer local, SamplerV2",
+    "noise_model": "hand-built depolarizing: p1 on ry, 10*p1 on cz - hardware-inspired, not calibrated to any device",
+    "finding": "all 35 runs recovered the exact MFE at gap 0.0; no degradation across the range tested",
+    "configs": [
+      {"arm": "noiseless", "config": "noiseless", "shots": 1024, "error_rate_1q": null, "error_rate_2q": null, "success": 5, "runs": 5, "gap_min": 0.0, "gap_median": 0.0, "gap_max": 0.0, "mean_runtime_sec": 2.12},
+      {"arm": "shot noise", "config": "128 shots", "shots": 128, "error_rate_1q": null, "error_rate_2q": null, "success": 5, "runs": 5, "gap_min": 0.0, "gap_median": 0.0, "gap_max": 0.0, "mean_runtime_sec": 1.61},
+      {"arm": "shot noise", "config": "512 shots", "shots": 512, "error_rate_1q": null, "error_rate_2q": null, "success": 5, "runs": 5, "gap_min": 0.0, "gap_median": 0.0, "gap_max": 0.0, "mean_runtime_sec": 1.78},
+      {"arm": "shot noise", "config": "2048 shots", "shots": 2048, "error_rate_1q": null, "error_rate_2q": null, "success": 5, "runs": 5, "gap_min": 0.0, "gap_median": 0.0, "gap_max": 0.0, "mean_runtime_sec": 2.7},
+      {"arm": "depolarizing", "config": "depol p=0.001", "shots": 1024, "error_rate_1q": 0.001, "error_rate_2q": 0.01, "success": 5, "runs": 5, "gap_min": 0.0, "gap_median": 0.0, "gap_max": 0.0, "mean_runtime_sec": 3.33},
+      {"arm": "depolarizing", "config": "depol p=0.005", "shots": 1024, "error_rate_1q": 0.005, "error_rate_2q": 0.05, "success": 5, "runs": 5, "gap_min": 0.0, "gap_median": 0.0, "gap_max": 0.0, "mean_runtime_sec": 3.7},
+      {"arm": "depolarizing", "config": "depol p=0.02", "shots": 1024, "error_rate_1q": 0.02, "error_rate_2q": 0.2, "success": 5, "runs": 5, "gap_min": 0.0, "gap_median": 0.0, "gap_max": 0.0, "mean_runtime_sec": 5.24}
+    ]
+  }
+}

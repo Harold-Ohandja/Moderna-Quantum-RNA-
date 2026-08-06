@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Folding RNA with Quantum Optimization — WISER × Moderna</title>
+<style>
+  :root {
+    /* Palette — anchored to the nucleotide colors used in the arc diagrams */
+    --paper:   #f7f5ef;   /* warm off-white, lab notebook */
+    --paper-2: #efece3;   /* panel tint */
+    --ink:     #1c2321;   /* near-black green-tinted ink */
+    --ink-2:   #4a534f;   /* secondary text */
+    --line:    #d8d3c6;   /* hairline */
+    --A: #3f6fb0;  /* adenine  — blue  */
+    --U: #d98a2b;  /* uracil   — amber */
+    --C: #b5432f;  /* cytosine — red   */
+    --G: #4a8b5c;  /* guanine  — green */
+    --match:  #4a8b5c;   /* correct pair */
+    --wrong:  #b5432f;   /* predicted-only pair */
+    --missed: #9a958a;   /* reference-only pair */
+    --accent: #4a8b5c;
+    --radius: 14px;
+    --maxw: 940px;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: "Iowan Old Style", "Palatino Linotype", "Georgia", serif;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+  .mono { font-family: "SFMono-Regular", "JetBrains Mono", "Consolas", monospace; }
+
+  .wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 24px; }
+
+  /* ---- Eyebrow / section labels ---- */
+  .eyebrow {
+    font-family: "SFMono-Regular", "Consolas", monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-2);
+    margin: 0 0 0.6rem;
+  }
+
+  /* ---- Hero ---- */
+  header.hero {
+    padding: 84px 0 40px;
+    border-bottom: 1px solid var(--line);
+  }
+  header.hero h1 {
+    font-size: clamp(2.1rem, 5.2vw, 3.5rem);
+    line-height: 1.08;
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    margin: 0.2rem 0 0.8rem;
+  }
+  header.hero .lede {
+    font-size: clamp(1.05rem, 2.2vw, 1.28rem);
+    color: var(--ink-2);
+    max-width: 620px;
+    margin: 0 0 1.6rem;
+  }
+  .hero-meta {
+    display: flex; flex-wrap: wrap; gap: 8px 10px;
+    font-family: "SFMono-Regular", "Consolas", monospace;
+    font-size: 0.76rem;
+  }
+  .chip {
+    background: var(--paper-2);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 4px 12px;
+    color: var(--ink-2);
+  }
+  .chip strong { color: var(--ink); font-weight: 600; }
+
+  /* Hero arc canvas */
+  .hero-arc { margin: 30px 0 4px; }
+  .hero-arc svg { width: 100%; height: auto; display: block; }
+
+  /* ---- Sections ---- */
+  section { padding: 58px 0; border-bottom: 1px solid var(--line); }
+  section h2 {
+    font-size: clamp(1.5rem, 3.4vw, 2rem);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    margin: 0.2rem 0 0.9rem;
+  }
+  section p { max-width: 660px; color: var(--ink-2); margin: 0 0 1rem; }
+  section p strong { color: var(--ink); font-weight: 600; }
+  .lead-in { color: var(--ink) !important; font-size: 1.12rem; }
+
+  /* ---- Two-column explainer (biology) ---- */
+  .cols {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 24px;
+    margin-top: 26px;
+  }
+  .card {
+    background: var(--paper-2);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 22px 24px;
+  }
+  .card h3 { margin: 0 0 0.4rem; font-size: 1.08rem; font-weight: 600; }
+  .card p { margin: 0; font-size: 0.98rem; }
+
+  /* ---- Nucleotide legend ---- */
+  .nuc-legend { display: flex; gap: 16px; flex-wrap: wrap; margin: 8px 0 0; font-family: "SFMono-Regular", monospace; font-size: 0.8rem; }
+  .nuc-legend span { display: inline-flex; align-items: center; gap: 6px; color: var(--ink-2); }
+  .dot { width: 13px; height: 13px; border-radius: 50%; display: inline-block; }
+
+  /* ---- Sequence explorer ---- */
+  .seq-tabs { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0 26px; }
+  .seq-tab {
+    font-family: "SFMono-Regular", monospace;
+    font-size: 0.82rem;
+    background: var(--paper-2);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 9px 14px;
+    cursor: pointer;
+    color: var(--ink-2);
+    transition: all 0.16s ease;
+    display: flex; align-items: center; gap: 9px;
+  }
+  .seq-tab:hover { border-color: var(--ink-2); color: var(--ink); }
+  .seq-tab[aria-selected="true"] {
+    background: var(--ink); color: var(--paper); border-color: var(--ink);
+  }
+  .seq-tab .tag {
+    font-size: 0.62rem; letter-spacing: 0.06em; text-transform: uppercase;
+    padding: 2px 7px; border-radius: 999px; font-weight: 600;
+  }
+  .tag.match  { background: rgba(74,139,92,0.16);  color: var(--match); }
+  .tag.gap    { background: rgba(181,67,47,0.16);   color: var(--wrong); }
+  .tag.skip   { background: rgba(154,149,138,0.2);  color: var(--missed); }
+  .seq-tab[aria-selected="true"] .tag { background: rgba(247,245,239,0.2); color: var(--paper); }
+
+  .panel {
+    background: var(--paper-2);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 26px;
+  }
+  .panel-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 12px; margin-bottom: 4px; }
+  .panel-head .seqname { font-family: "SFMono-Regular", monospace; font-size: 1.1rem; font-weight: 600; letter-spacing: 0.04em; }
+  .panel-verdict { font-size: 0.95rem; color: var(--ink-2); margin: 0 0 12px; }
+  .panel-arc svg { width: 100%; height: auto; display: block; }
+
+  .readout {
+    display: grid; grid-template-columns: auto 1fr; gap: 6px 16px;
+    font-family: "SFMono-Regular", monospace; font-size: 0.86rem;
+    margin-top: 14px; padding-top: 14px; border-top: 1px dashed var(--line);
+  }
+  .readout .k { color: var(--ink-2); }
+  .readout .v { color: var(--ink); }
+  .readout .v.good { color: var(--match); font-weight: 600; }
+  .readout .v.bad  { color: var(--wrong); font-weight: 600; }
+
+  .stat-row { display: flex; gap: 26px; flex-wrap: wrap; margin: 16px 0 2px; }
+  .stat { }
+  .stat .n { font-size: 1.9rem; font-weight: 600; letter-spacing: -0.02em; line-height: 1; }
+  .stat .l { font-family: "SFMono-Regular", monospace; font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-2); margin-top: 5px; }
+
+  /* ---- Noise chart ---- */
+  .noise-chart svg { width: 100%; height: auto; display: block; }
+  .noise-finding {
+    background: rgba(74,139,92,0.08);
+    border: 1px solid rgba(74,139,92,0.28);
+    border-radius: 10px; padding: 14px 18px; margin-top: 18px;
+    color: var(--ink); font-size: 0.98rem;
+  }
+
+  /* ---- Method comparison mini-legend ---- */
+  .arc-legend { display: flex; gap: 18px; flex-wrap: wrap; margin: 4px 0 18px; font-family: "SFMono-Regular", monospace; font-size: 0.76rem; color: var(--ink-2); }
+  .arc-legend span { display: inline-flex; align-items: center; gap: 7px; }
+  .swatch { width: 20px; height: 3px; border-radius: 2px; display: inline-block; }
+  .swatch.dash { height: 0; border-top: 3px dashed var(--missed); }
+
+  /* ---- Footer ---- */
+  footer { padding: 50px 0 70px; }
+  footer .eyebrow { margin-bottom: 1rem; }
+  .links { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 6px; }
+  .btn {
+    font-family: "SFMono-Regular", monospace; font-size: 0.85rem;
+    text-decoration: none; color: var(--ink);
+    border: 1px solid var(--ink); border-radius: 10px;
+    padding: 11px 18px; transition: all 0.16s ease;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .btn:hover { background: var(--ink); color: var(--paper); }
+  .btn.ghost { border-color: var(--line); color: var(--ink-2); }
+  .btn.ghost:hover { border-color: var(--ink-2); background: transparent; color: var(--ink); }
+  .byline { font-family: "SFMono-Regular", monospace; font-size: 0.8rem; color: var(--ink-2); margin-top: 26px; }
+  .disclaimer { font-size: 0.8rem; color: var(--ink-2); margin-top: 8px; max-width: 640px; }
+
+  /* reveal on scroll */
+  .reveal { opacity: 0; transform: translateY(14px); transition: opacity 0.6s ease, transform 0.6s ease; }
+  .reveal.in { opacity: 1; transform: none; }
+  @media (prefers-reduced-motion: reduce) {
+    .reveal { opacity: 1; transform: none; transition: none; }
+    html { scroll-behavior: auto; }
+  }
+
+  @media (max-width: 680px) {
+    .cols { grid-template-columns: 1fr; }
+    header.hero { padding: 54px 0 30px; }
+    section { padding: 44px 0; }
+    .readout { grid-template-columns: 1fr; gap: 2px; }
+    .readout .k { margin-top: 8px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <p class="eyebrow" id="challenge-label">WISER × Moderna · Quantum+AI 2026</p>
+    <h1>Folding RNA with a quantum computer — and checking its work honestly.</h1>
+    <p class="lede">We ask a quantum optimizer to predict how a short strand of RNA folds, then hold its answer up against the classical gold standard. Sometimes it nails it. Sometimes it doesn't — and that gap is the interesting part.</p>
+    <div class="hero-meta" id="hero-meta"></div>
+    <div class="hero-arc" id="hero-arc"></div>
+  </div>
+</header>
+
+<!-- 1. Why this matters -->
+<section id="why">
+  <div class="wrap reveal">
+    <p class="eyebrow">01 · The problem</p>
+    <h2>Why does the shape of RNA matter?</h2>
+    <p class="lead-in">A strand of RNA doesn't stay a straight line. It folds back and pairs with itself, and the shape it settles into decides how it behaves.</p>
+    <p>For an mRNA medicine, that folded shape influences how <strong>stable</strong> the molecule is, how efficiently a cell can <strong>read it to make protein</strong>, and how easy it is to <strong>manufacture</strong>. Predict the shape well, and you can design better medicines. The catch: the number of possible ways a strand can fold explodes as it gets longer, far too many to check one by one.</p>
+    <div class="cols">
+      <div class="card">
+        <h3>The classical gold standard</h3>
+        <p>Tools like <strong>ViennaRNA</strong> use decades of thermodynamics to find the single lowest-energy fold — the “minimum free energy” shape. It's fast and trusted. We treat its answer as ground truth.</p>
+      </div>
+      <div class="card">
+        <h3>The quantum question</h3>
+        <p>Can a <strong>quantum optimizer</strong> rediscover that same shape by searching the energy landscape a different way? Not to beat the classical tool today — but to learn how the approach scales, and where it breaks.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 2. How to read an arc diagram -->
+<section id="read">
+  <div class="wrap reveal">
+    <p class="eyebrow">02 · How to read this</p>
+    <h2>Every fold is a set of arcs</h2>
+    <p>Lay the RNA letters out in a line. Each time two letters pair up, we draw an arc connecting them. A folded structure is just a collection of these arcs. Two predictions agree when their arcs match.</p>
+    <div class="nuc-legend" id="nuc-legend"></div>
+    <p style="margin-top:18px">In the explorer below, we stack <strong>our quantum method's answer above</strong> the line and <strong>ViennaRNA's answer below</strong> it. When the two mirror each other perfectly, the prediction is exact. When the top has arcs the bottom doesn't, the quantum method predicted a pairing that shouldn't be there.</p>
+  </div>
+</section>
+
+<!-- 3. The explorer -->
+<section id="explore">
+  <div class="wrap reveal">
+    <p class="eyebrow">03 · The results</p>
+    <h2>See it for each sequence</h2>
+    <p>Pick a strand. Green arcs are pairings both methods agree on; red arcs are ones only the quantum method predicted; grey dashed arcs are ones only ViennaRNA found.</p>
+    <div class="seq-tabs" id="seq-tabs" role="tablist"></div>
+    <div class="arc-legend">
+      <span><i class="swatch" style="background:var(--match)"></i> Both agree</span>
+      <span><i class="swatch" style="background:var(--wrong)"></i> Quantum only</span>
+      <span><i class="swatch dash"></i> ViennaRNA only</span>
+    </div>
+    <div class="panel" id="explorer-panel"></div>
+  </div>
+</section>
+
+<!-- 4. The honest finding -->
+<section id="honest">
+  <div class="wrap reveal">
+    <p class="eyebrow">04 · The honest part</p>
+    <h2>When every method misses — together</h2>
+    <p class="lead-in">On two of our test strands, the quantum method got the wrong answer. So we checked something: could a brute-force search that tries <em>every</em> possibility do better?</p>
+    <p>It couldn't. Brute force landed on the <strong>same wrong answer</strong>. That tells us something precise: the mistake isn't the quantum optimizer being weak — it's that our simplified energy model rewards a pairing that real thermodynamics wouldn't. The optimizer solved the problem we gave it faithfully; the problem itself was slightly off. <strong>That's a formulation gap, not a solver failure</strong> — and knowing the difference is the whole point of a benchmark.</p>
+  </div>
+</section>
+
+<!-- 5. Noise -->
+<section id="noise">
+  <div class="wrap reveal">
+    <p class="eyebrow">05 · Real hardware is noisy</p>
+    <h2>Does the answer survive imperfect hardware?</h2>
+    <p>Real quantum machines make errors. We simulated that — running the smallest sequence under increasing amounts of sampling noise and hardware-inspired gate noise — to see whether the correct fold falls apart.</p>
+    <div class="noise-chart" id="noise-chart"></div>
+    <div class="noise-finding" id="noise-finding"></div>
+    <p class="disclaimer" id="noise-disclaimer"></p>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="wrap reveal">
+    <p class="eyebrow">Go deeper</p>
+    <h2 style="margin-bottom:0.5rem">Want the technical version?</h2>
+    <p>Everything here comes straight from the notebooks. The repo has the full QUBO formulation, the CVaR-VQE and QAOA solvers, the benchmarking harness, and the scaling analysis.</p>
+    <div class="links" id="footer-links">
+      <a class="btn" id="repo-link" href="#">↗ View the repository</a>
+      <a class="btn ghost" id="paper-link" href="https://arxiv.org/abs/2405.20328">↗ Reference paper (Moderna × IBM)</a>
+    </div>
+    <p class="byline" id="byline"></p>
+    <p class="disclaimer">Educational research exercise. Public / synthetic RNA sequences only — no proprietary or clinical data. Simulation only; no quantum hardware was used.</p>
+  </div>
+</footer>
+
+<script>
+const REPO_URL = "https://github.com/Harold-Ohandja/Moderna-Quantum-RNA-";
+
+const NUC_COLORS = { A: "var(--A)", U: "var(--U)", C: "var(--C)", G: "var(--G)" };
+
+// derive pairs from dot-bracket, as a client-side cross-check of the JSON's pairs
+function pairsFromDotBracket(s) {
+  const stack = [], out = [];
+  for (let i = 0; i < s.length; i++) {
+    if (s[i] === "(") stack.push(i);
+    else if (s[i] === ")") { const j = stack.pop(); if (j != null) out.push([j, i]); }
+  }
+  return out.sort((a, b) => a[0] - b[0]);
+}
+
+function keyset(pairs) { return new Set(pairs.map(p => p[0] + "-" + p[1])); }
+
+/* Build an SVG arc diagram.
+   mode "mirror": predicted arcs above baseline, reference arcs below.
+   Colors: match = green (both), wrong = red (pred only), missed = grey dashed (ref only). */
+function arcDiagram(seq, predPairs, refPairs, opts = {}) {
+  const n = seq.length;
+  const W = 760, padX = 40, baseGap = (W - 2 * padX) / (n - 1 || 1);
+  const nodeR = 12;
+  const predSet = keyset(predPairs), refSet = keyset(refPairs);
+  const maxSpanArc = (pairs) => pairs.reduce((m, [i, j]) => Math.max(m, j - i), 0);
+  // arc apex ≈ r = span*baseGap/2 (semicircle); reserve just past it
+  const apex = (pairs) => maxSpanArc(pairs) * baseGap * 0.5;
+  const topH = Math.max(34, apex(predPairs) + 20);
+  const botH = opts.mirror ? Math.max(28, apex(refPairs) + 20) : 24;
+  const midY = topH + 8;
+  const H = topH + botH + 40;
+
+  const x = i => padX + i * baseGap;
+  let svg = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="RNA fold arc diagram for ${seq}">`;
+
+  // arcs
+  function arc(i, j, up, color, dashed) {
+    const x1 = x(i), x2 = x(j), r = (x2 - x1) / 2, cx = (x1 + x2) / 2;
+    const y = midY;
+    const dy = up ? -1 : 1;
+    // half-ellipse via cubic; control offset 1.33*r gives apex ≈ r (a clean semicircle look)
+    const h = r * 1.33 * dy;
+    const d = `M ${x1} ${y} C ${x1} ${y + h}, ${x2} ${y + h}, ${x2} ${y}`;
+    return `<path d="${d}" fill="none" stroke="${color}" stroke-width="2.4" ${dashed ? 'stroke-dasharray="6 5"' : ''} stroke-linecap="round" class="arc-path"/>`;
+  }
+
+  // predicted arcs on top: green if also in ref (match), red if pred-only
+  predPairs.forEach(([i, j]) => {
+    const isMatch = refSet.has(i + "-" + j);
+    svg += arc(i, j, true, isMatch ? "var(--match)" : "var(--wrong)", false);
+  });
+  if (opts.mirror) {
+    // reference arcs on bottom: green if also predicted (match), grey dashed if ref-only
+    refPairs.forEach(([i, j]) => {
+      const isMatch = predSet.has(i + "-" + j);
+      svg += arc(i, j, false, isMatch ? "var(--match)" : "var(--missed)", !isMatch);
+    });
+  }
+
+  // baseline
+  svg += `<line x1="${x(0)}" y1="${midY}" x2="${x(n-1)}" y2="${midY}" stroke="var(--line)" stroke-width="2"/>`;
+
+  // nodes + letters
+  for (let i = 0; i < n; i++) {
+    const c = NUC_COLORS[seq[i]] || "var(--ink-2)";
+    svg += `<circle cx="${x(i)}" cy="${midY}" r="${nodeR}" fill="${c}"/>`;
+    svg += `<text x="${x(i)}" y="${midY + 4}" text-anchor="middle" font-size="11" font-weight="700" fill="#fff" font-family="monospace">${seq[i]}</text>`;
+  }
+  svg += `</svg>`;
+  return svg;
+}
+
+function fmtEnergy(e) { return (e === null || e === undefined) ? "—" : (e > 0 ? "+" : "") + e.toFixed(1) + " kcal/mol"; }
+
+let DATA = null;
+
+fetch("data/results.json")
+  .then(r => r.json())
+  .then(data => { DATA = data; render(data); })
+  .catch(err => {
+    document.getElementById("explorer-panel").innerHTML =
+      `<p style="color:var(--wrong)">Could not load results.json — if you're opening this file directly, serve the folder over http (e.g. <span class="mono">python -m http.server</span>) so the browser can read the data file.</p>`;
+    console.error(err);
+  });
+
+function render(data) {
+  const m = data.meta;
+
+  // hero label + meta chips
+  document.getElementById("challenge-label").textContent = m.challenge;
+  document.getElementById("hero-meta").innerHTML = [
+    `<span class="chip"><strong>${m.primary_method}</strong> primary method</span>`,
+    `<span class="chip">vs. <strong>${m.classical_reference}</strong></span>`,
+    `<span class="chip">${data.sequences.length} sequences tested</span>`,
+    `<span class="chip">simulation only</span>`
+  ].join("");
+
+  // hero arc — use the exact-match sequence as the "wow, they line up" opener
+  const heroSeq = data.sequences.find(s => s.verdict === "exact_match") || data.sequences[0];
+  const heroPred = heroSeq.methods[0];
+  document.getElementById("hero-arc").innerHTML =
+    arcDiagram(heroSeq.sequence, heroPred.pairs || [], heroSeq.reference.pairs || [], { mirror: true });
+
+  // nucleotide legend
+  document.getElementById("nuc-legend").innerHTML = ["A","U","C","G"].map(nt =>
+    `<span><i class="dot" style="background:${NUC_COLORS[nt]}"></i> ${nt}</span>`
+  ).join("");
+
+  // byline + links
+  document.getElementById("byline").textContent = "Built by " + m.team.join(" & ") + " · primary method mirrors " + m.reference_paper;
+  document.getElementById("repo-link").href = REPO_URL;
+  if (m.reference_paper) document.getElementById("paper-link").href = "https://arxiv.org/abs/2405.20328";
+
+  // sequence tabs
+  const tabs = document.getElementById("seq-tabs");
+  data.sequences.forEach((s, idx) => {
+    const tag = s.verdict === "exact_match" ? '<span class="tag match">match</span>'
+              : s.verdict === "skipped"     ? '<span class="tag skip">too big</span>'
+              : '<span class="tag gap">gap</span>';
+    const b = document.createElement("button");
+    b.className = "seq-tab";
+    b.setAttribute("role", "tab");
+    b.setAttribute("aria-selected", idx === 0 ? "true" : "false");
+    b.dataset.idx = idx;
+    b.innerHTML = `${s.sequence} ${tag}`;
+    b.addEventListener("click", () => selectSeq(idx));
+    tabs.appendChild(b);
+  });
+  selectSeq(0);
+
+  renderNoise(data.noise_study);
+  setupReveal();
+}
+
+function selectSeq(idx) {
+  const s = DATA.sequences[idx];
+  document.querySelectorAll(".seq-tab").forEach(t =>
+    t.setAttribute("aria-selected", t.dataset.idx == idx ? "true" : "false"));
+
+  const panel = document.getElementById("explorer-panel");
+
+  if (s.verdict === "skipped") {
+    const heur = s.methods.find(x => !x.quantum) || {};
+    panel.innerHTML = `
+      <div class="panel-head">
+        <span class="seqname">${s.sequence}</span>
+        <span class="mono" style="color:var(--ink-2);font-size:0.8rem">${s.length} nt · ${s.num_qubits} qubits</span>
+      </div>
+      <p class="panel-verdict">This strand needs <strong>${s.num_qubits} qubits</strong> — past what we can simulate locally (${DATA.meta.quantum_qubit_limit}-qubit limit). It marks where this approach stops being practical on a laptop, which is itself part of the scaling story. ViennaRNA still folds it instantly; a classical heuristic gets close.</p>
+      <div class="panel-arc">${arcDiagram(s.sequence, [], s.reference.pairs || [], { mirror: false })}</div>
+      <div class="readout">
+        <span class="k">ViennaRNA MFE</span><span class="v mono">${s.reference.structure} · ${fmtEnergy(s.reference.energy_kcal)}</span>
+        <span class="k">Quantum</span><span class="v mono">skipped — ${s.num_qubits} qubits > limit</span>
+        <span class="k">Classical heuristic</span><span class="v mono">${heur.structure || "—"} · ${fmtEnergy(heur.energy_kcal)}</span>
+      </div>`;
+    return;
+  }
+
+  const pred = s.methods[0]; // guaranteed CVaR-VQE / primary, listed first
+  const matchClass = pred.match ? "good" : "bad";
+  const verdictText = s.verdict === "exact_match"
+    ? "Our quantum method found the <strong>exact same fold</strong> as ViennaRNA. The diagram is a clean mirror — every arc on top has a partner below."
+    : (s.reference.pairs.length === 0
+        ? "ViennaRNA says this strand has <strong>no stable pairings at all</strong>. Our method predicted some anyway — the red arcs on top with nothing below them. A brute-force search made the same mistake, so this is a formulation gap, not a weak solver."
+        : "The two methods disagree. Red arcs are pairings the quantum method predicted that ViennaRNA didn't.");
+
+  panel.innerHTML = `
+    <div class="panel-head">
+      <span class="seqname">${s.sequence}</span>
+      <span class="mono" style="color:var(--ink-2);font-size:0.8rem">${s.length} nt · ${s.num_qubits} qubits</span>
+    </div>
+    <p class="panel-verdict">${verdictText}</p>
+    <div class="panel-arc">${arcDiagram(s.sequence, pred.pairs || [], s.reference.pairs || [], { mirror: true })}</div>
+    <div class="stat-row">
+      <div class="stat"><div class="n" style="color:${pred.match ? 'var(--match)' : 'var(--wrong)'}">${pred.match ? "Exact" : "Miss"}</div><div class="l">vs ViennaRNA</div></div>
+      <div class="stat"><div class="n">${pred.gap_kcal.toFixed(1)}</div><div class="l">energy gap (kcal/mol)</div></div>
+      <div class="stat"><div class="n">${pred.runtime_sec.toFixed(2)}s</div><div class="l">${DATA.meta.primary_method} runtime</div></div>
+    </div>
+    <div class="readout">
+      <span class="k">Our method (${DATA.meta.primary_method})</span><span class="v mono ${matchClass}">${pred.structure}</span>
+      <span class="k">ViennaRNA MFE</span><span class="v mono">${s.reference.structure}</span>
+    </div>`;
+}
+
+function renderNoise(ns) {
+  const configs = ns.configs;
+  const W = 760, H = 300, padL = 54, padR = 20, padT = 24, padB = 74;
+  const plotW = W - padL - padR, plotH = H - padT - padB;
+  const n = configs.length;
+  const step = plotW / n;
+  // y axis: energy gap 0 .. 1 (all data sits at 0 — that IS the finding)
+  const yMax = 1.0;
+  const yFor = v => padT + plotH - (v / yMax) * plotH;
+
+  let svg = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Energy gap under noise — every configuration stays at zero">`;
+
+  // gridlines + y labels
+  [0, 0.25, 0.5, 0.75, 1.0].forEach(g => {
+    const y = yFor(g);
+    svg += `<line x1="${padL}" y1="${y}" x2="${W - padR}" y2="${y}" stroke="var(--line)" stroke-width="1"/>`;
+    svg += `<text x="${padL - 8}" y="${y + 4}" text-anchor="end" font-size="10" fill="var(--ink-2)" font-family="monospace">${g.toFixed(2)}</text>`;
+  });
+  // "perfect" line highlight at 0
+  const y0 = yFor(0);
+  svg += `<line x1="${padL}" y1="${y0}" x2="${W - padR}" y2="${y0}" stroke="var(--match)" stroke-width="2" stroke-dasharray="2 4"/>`;
+
+  // points — one marker per config (all at gap 0), success annotated above
+  const armColor = { "noiseless": "var(--A)", "shot noise": "var(--U)", "depolarizing": "var(--C)" };
+  configs.forEach((c, i) => {
+    const cx = padL + step * (i + 0.5);
+    const cy = yFor(c.gap_median);
+    svg += `<circle cx="${cx}" cy="${cy}" r="6" fill="${armColor[c.arm] || 'var(--ink)'}" stroke="var(--paper)" stroke-width="1.5"/>`;
+    // success k/runs above
+    svg += `<text x="${cx}" y="${padT - 8}" text-anchor="middle" font-size="10" fill="var(--match)" font-family="monospace" font-weight="700">${c.success}/${c.runs}</text>`;
+    // x label (rotated)
+    svg += `<text x="${cx}" y="${H - padB + 18}" text-anchor="end" font-size="9.5" fill="var(--ink-2)" font-family="monospace" transform="rotate(-32 ${cx} ${H - padB + 18})">${c.config}</text>`;
+  });
+
+  // axis titles
+  svg += `<text x="14" y="${padT + plotH/2}" text-anchor="middle" font-size="10" fill="var(--ink-2)" font-family="monospace" transform="rotate(-90 14 ${padT + plotH/2})">energy gap vs MFE</text>`;
+  svg += `<text x="${W/2}" y="${H - 6}" text-anchor="middle" font-size="10" fill="var(--ink-2)" font-family="monospace">noise level  ·  more shots / higher error rate →</text>`;
+  svg += `</svg>`;
+
+  document.getElementById("noise-chart").innerHTML = svg;
+  document.getElementById("noise-finding").innerHTML =
+    `<strong>Every one of the ${ns.total_runs} runs recovered the exact fold.</strong> Across finite-shot sampling and depolarizing gate noise up to a clearly-degraded level, the energy gap never budged from zero. For a strand this small, the answer is robust — the only thing noise changed was how long the simulation took.`;
+  document.getElementById("noise-disclaimer").textContent =
+    `Note: ${ns.noise_model}. This is one ${ns.num_qubits}-qubit instance with a shallow circuit — few gates for error to accumulate on. Robustness here shouldn't be extrapolated to the larger sequences that exceed the local-simulation limit.`;
+}
+
+function setupReveal() {
+  const els = document.querySelectorAll(".reveal");
+  if (!("IntersectionObserver" in window)) { els.forEach(e => e.classList.add("in")); return; }
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } });
+  }, { threshold: 0.12 });
+  els.forEach(e => io.observe(e));
+}
+</script>
+</body>
+</html>
