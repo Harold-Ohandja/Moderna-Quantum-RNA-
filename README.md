@@ -192,7 +192,8 @@ Moderna-Quantum-RNA-/
 │   ├── 01_Classical_Benchmark.ipynb  # ViennaRNA baseline + QUBO formulation walkthrough
 │   ├── 02_CVaR_VQE_Solver.ipynb      # Primary quantum solver, with results & limitations
 │   ├── 03_QAOA_Comparison.ipynb      # QAOA vs. CVaR-VQE, encoding/tradeoff discussion
-│   └── 04_Full_Comparison.ipynb      # All methods side by side — start here
+│   ├── 04_Full_Comparison.ipynb      # All methods side by side — start here
+│   └── 05_Noise_Robustness.ipynb     # CVaR-VQE under shot + depolarizing noise (Aer, local)
 │
 ├── scripts/
 │   ├── run_solver.py             # Run the classical baseline on one sequence (CLI)
