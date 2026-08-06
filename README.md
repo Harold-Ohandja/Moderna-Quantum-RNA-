@@ -75,7 +75,7 @@ Valid base pairs typically include standard Watson-Crick pairs ($\text{A--U}$, $
 * **Multi-branched Junctions:** Regions where three or more double-stranded stems meet (highlighted in cyan).
 * **Pseudoknot Motifs:** Non-nested tertiary/secondary interactions involving crossing base pairs (highlighted in pink).
 
-![Key structural motifs forming RNA secondary and tertiary structures: helices, hairpin loops, bulges, internal loops, multi-branched loops, and pseudoknot patterns.](figures/fig1.png)
+![Key structural motifs forming RNA secondary and tertiary structures: helices, hairpin loops, bulges, internal loops, multi-branched loops, and pseudoknot patterns.](figures/1.png)
 
 The standard computational representation for secondary structures without pseudoknots is the *Dot-Bracket notation*. For a sequence of length $L$, the structure is expressed as a string of length $L$ over the alphabet $\{\text{.}, \text{(}, \text{)}\}$, where:
 
