@@ -37,7 +37,8 @@ def run_benchmark_for(sequence: str) -> dict:
     print("Sequence       :", sequence)
     print("Length         :", len(sequence))
     print("MFE structure  :", structure)
-    print("MFE energy     :", mfe_energy, "kcal/mol")
+    # RNA.fold returns float32, so print at the 2 dp the notebooks display
+    print(f"MFE energy     : {mfe_energy:.2f} kcal/mol")
     print("Eval energy    :", eval_energy, "kcal/mol")
     print("Candidate pairs:", candidate_pairs)
     print("Num pairs      :", len(candidate_pairs))
@@ -76,7 +77,20 @@ if __name__ == "__main__":
     out_dir.mkdir(parents=True, exist_ok=True)
 
     out_path = out_dir / "reference_mfe.json"
-    with out_path.open("w", encoding="utf-8") as f:
-        json.dump(results, f, indent=2)
 
-    print(f"Saved reference MFE benchmarks to {out_path}")
+    # Merge into whatever is already there, keyed by sequence. Writing `results`
+    # straight out would drop every sequence not in *this* run, so the documented
+    # single-sequence command used to silently truncate the committed file.
+    merged = {}
+    if out_path.exists():
+        try:
+            merged = json.loads(out_path.read_text(encoding="utf-8"))
+        except json.JSONDecodeError:
+            print(f"Warning: {out_path} is not valid JSON, rewriting it from this run only.")
+    merged.update(results)
+
+    with out_path.open("w", encoding="utf-8") as f:
+        json.dump(merged, f, indent=2)
+
+    print(f"Saved reference MFE benchmarks for {', '.join(results)} to {out_path}")
+    print(f"  file now holds {len(merged)} sequence(s): {', '.join(merged)}")

@@ -14,3 +14,6 @@ scipy>=1.8.0
 # Visualization
 matplotlib>=3.5.0
 seaborn>=0.12.0
+
+# Notebooks (needed to open notebooks/ locally -- see README "Option B")
+jupyterlab>=4.0

@@ -67,7 +67,9 @@ def compare_sequence(seq: str):
     rows.append({
         "sequence": seq, "length": len(seq), "num_qubits": num_qubits,
         "method": "ViennaRNA_MFE", "structure": ref_struct,
-        "energy_kcal": ref_mfe, "match": True, "gap_kcal": 0.0,
+        # RNA.fold returns float32; round for display/CSV only -- the gap
+        # calculations below still use the full-precision `ref_mfe`.
+        "energy_kcal": round(float(ref_mfe), 2), "match": True, "gap_kcal": 0.0,
         "runtime_sec": None, "notes": "classical ground truth",
     })
 
