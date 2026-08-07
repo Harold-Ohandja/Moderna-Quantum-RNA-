@@ -16,8 +16,8 @@ A one-page, no-install walkthrough of what this project does and what we found, 
 
 ## Team & Contributions
 
-- **Pushkar Kumar** — Quantum/ML implementation lead. Designed the QUBO and Ising formulation, implemented the CVaR-VQE and QAOA solvers, built the benchmarking notebooks and the unified comparison, ran the noise-robustness study, and created the live interactive web explainer.
-- **Harold Ohandja** — Classical solver track. Implemented the exact brute-force and greedy heuristic baselines, built the benchmark automation, produced the resource and scaling analysis, and authored the technical report.
+- **Pushkar Kumar** (pushkarkumar0997@gmail.com) — Quantum/ML implementation lead. Designed the QUBO and Ising formulation, implemented the CVaR-VQE and QAOA solvers, built the benchmarking notebooks and the unified comparison, ran the noise-robustness study, and created the live interactive web explainer.
+- **Harold Ohandja** (harold.ohandja@aims-cameroon.org) — Classical solver track. Implemented the exact brute-force and greedy heuristic baselines, built the benchmark automation, produced the resource and scaling analysis, and authored the technical report.
 
 ---
 
