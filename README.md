@@ -263,7 +263,13 @@ Moderna-Quantum-RNA-/
 │   ├── run_solver.py             # run the classical baseline on one sequence (CLI)
 │   ├── run_milestone5_benchmarks.py  # batch classical baseline runs → CSV
 │   └── run_full_comparison.py    # all methods, all sequences → one combined CSV
-│
+├── submission/                   # Final deliverables
+│   ├── report_final.pdf          #   technical report (compiled)
+│   ├── report_final.tex          #   report source
+│   ├── img1.png                  #   figure: RNA motifs
+│   ├── scaling_qubits_depth.png  #   figure: empirical qubit scaling
+│   └── Moderna_Challenge_Presentation.pdf   #   slide deck
+|
 ├── figures/                      # generated scaling figures + the motif illustration
 ├── output/                       # CSV / markdown result logs (produced by the scripts)
 └── reports/                      # milestone-by-milestone progress reports
@@ -304,6 +310,14 @@ The challenge lists three optional advanced tasks. Status in this repo:
 - **Pseudoknot handling — done.** Pseudoknots are explicitly excluded via the non-crossing penalty, with the reasoning stated in [§3.2](#32-objective-function-and-hamiltonian) and in the notebooks/reports.
 - **Compare multiple encodings — partial.** `03_QAOA_Comparison.ipynb` compares CVaR-VQE and QAOA/CVaR-QAOA on the same QUBO and discusses qubit-count and constraint-enforcement tradeoffs ([§4.3](#43-what-the-comparison-shows)). Because all three share one encoding, those two axes come out identical; the real measured contrast is in ansatz structure and depth.
 - **Noise robustness — done.** `05_Noise_Robustness.ipynb` runs CVaR-VQE on the smallest sequence under finite-shot sampling and hardware-inspired depolarizing noise (local Aer simulation). Finding: the exact MFE is recovered across the full range tested.
+
+---
+
+## Deliverables
+
+- 📄 **[Technical Report (PDF)](submission/report_final.pdf)** — full write-up: QUBO formulation, CVaR-VQE method, results, scaling analysis, and limitations.
+- 🖥️ **[Presentation (PDF)](submission/Moderna_Challenge_Presentation.pdf)** — slide deck summarising the approach and findings.
+- 🌐 **[Live interactive demo](https://harold-ohandja.github.io/Moderna-Quantum-RNA-/)** — no-install web explainer of the results.
 
 ---
 
