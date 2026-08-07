@@ -14,10 +14,10 @@ A one-page, no-install walkthrough of what this project does and what we found, 
 
 ---
 
-## Team
+## Team & Contributions
 
-- **Pushkar Kumar** — quantum/ML implementation lead: QUBO formulation, CVaR-VQE and QAOA solvers, notebooks, web explainer.
-- **Harold Ohandja** — classical solver track: brute-force/heuristic baselines, benchmark automation, resource analysis.
+- **Pushkar Kumar** — Quantum/ML implementation lead. Designed the QUBO and Ising formulation, implemented the CVaR-VQE and QAOA solvers, built the benchmarking notebooks and the unified comparison, ran the noise-robustness study, and created the live interactive web explainer.
+- **Harold Ohandja** — Classical solver track. Implemented the exact brute-force and greedy heuristic baselines, built the benchmark automation, produced the resource and scaling analysis, and authored the technical report.
 
 ---
 
@@ -49,15 +49,30 @@ A one-page, no-install walkthrough of what this project does and what we found, 
 
 ## Table of Contents
 
-1. [Getting Started](#getting-started)
-2. [Introduction](#1-introduction)
-3. [Theoretical Background and Related Work](#2-theoretical-background-and-related-work)
-4. [QUBO Formulation](#3-qubo-formulation)
-5. [Quantum Algorithms](#4-quantum-algorithms)
-6. [Repository Structure](#5-repository-structure)
-7. [What to Expect When You Run It](#6-what-to-expect-when-you-run-it)
-8. [Bonus / Optional Tasks](#7-bonus--optional-tasks)
-9. [References](#references)
+1. [Why This Approach](#why-this-approach)
+2. [Getting Started](#getting-started)
+3. [Introduction](#1-introduction)
+4. [Theoretical Background and Related Work](#2-theoretical-background-and-related-work)
+5. [QUBO Formulation](#3-qubo-formulation)
+6. [Quantum Algorithms](#4-quantum-algorithms)
+7. [Repository Structure](#5-repository-structure)
+8. [What to Expect When You Run It](#6-what-to-expect-when-you-run-it)
+9. [Testing & Reproducibility](#testing--reproducibility)
+10. [Bonus / Optional Tasks](#7-bonus--optional-tasks)
+11. [Limitations and Future Work](#limitations-and-future-work)
+12. [Deliverables](#deliverables)
+13. [References](#references)
+
+---
+
+## Why This Approach
+
+We chose a **QUBO + CVaR-VQE** pipeline deliberately, over the other options the challenge allowed (plain VQE, QAOA, quantum annealing, tensor-network methods):
+
+- **It mirrors the sponsor's own validated method.** Moderna and IBM Quantum solved this exact problem with CVaR-VQE (Alevras et al., 2024), validating up to 60 nt against classical CPLEX. Building on a peer-reviewed, sponsor-authored approach is stronger than inventing a weaker formulation from scratch.
+- **CVaR-VQE is robust where plain VQE struggles.** RNA folding produces a rugged combinatorial energy landscape. By optimising only the best 10% of sampled bitstrings each iteration (α = 0.1), CVaR resists getting trapped in poor local minima, unlike standard expectation-value VQE.
+- **QUBO gives a clean classical cross-check.** Because the same QUBO can be solved exactly by brute force for small instances, we can tell a formulation error apart from a solver error — which turned out to be central to our main finding.
+- **It runs on simulators.** The challenge permits simulation only; our whole pipeline runs on Qiskit Aer with no hardware dependency.
 
 ---
 
@@ -303,6 +318,19 @@ python scripts/run_full_comparison.py
 
 ---
 
+## Testing & Reproducibility
+
+Reproducibility was verified, not assumed:
+
+- **Fresh-clone tested.** The repository was cloned into a clean environment and `pip install -r requirements.txt` run from scratch; every command in this README was executed and reproduces the documented output.
+- **Notebooks execute end to end.** All notebooks run cleanly via `jupyter nbconvert --execute` with no errors.
+- **Built-in ground truth.** Every predicted structure is scored against the ViennaRNA reference on each run, so an incorrect formulation surfaces immediately rather than being assumed correct.
+- **Deterministic seeding.** Both the sampler and the optimiser's initial point are seeded, so identical seeds reproduce identical results.
+- **Cross-platform.** Scripts are ASCII-safe and the documented commands are non-destructive on a fresh clone (they merge into, rather than overwrite, committed data).
+
+---
+
+
 ## 7. Bonus / Optional Tasks
 
 The challenge lists three optional advanced tasks. Status in this repo:
@@ -313,6 +341,26 @@ The challenge lists three optional advanced tasks. Status in this repo:
 
 ---
 
+## Limitations and Future Work
+
+We report limitations openly, since understanding them is part of an honest benchmark.
+
+**Limitations:**
+- **Simplified energy model (the formulation gap).** Our QUBO rewards any valid base pair with a constant bias and omits sequence-length-dependent loop-entropy penalties. On some sequences this causes it to predict pairings that real thermodynamics would reject — and because exact brute force fails identically, the limitation is in the model, not the optimiser.
+- **Small instances only.** Candidate-pair counts cross the ~16-qubit local statevector-simulation ceiling at around 12–14 nt, so the quantum solvers are demonstrated on 3–10 qubit cases; larger sequences are handled only by the classical heuristic baseline.
+- **Scaling uses random sequences.** The empirical scaling figures are generated on randomly sampled sequences, so exact per-length qubit counts vary between runs; the growth trend, not any single point, is the result.
+- **Noise study is a single instance.** Robustness was verified on one small (7-qubit), shallow-circuit sequence. It should not be extrapolated to larger sequences.
+- **Encoding comparison is partial.** We compare CVaR-VQE and QAOA over one shared QUBO encoding; a comparison of genuinely different encodings remains open.
+
+**Future work:**
+- Add loop-entropy / Turner nearest-neighbour terms to the QUBO to close the formulation gap.
+- Explore restricted pseudoknot support via higher-order (HOBO) formulations.
+- Warm-start the ansatz from classical heuristic solutions to reach larger sequences.
+- Run the pipeline on real IBM Quantum hardware with error mitigation.
+
+
+---
+
 ## Deliverables
 
 - 📄 **[Technical Report (PDF)](submission/report_final.pdf)** — full write-up: QUBO formulation, CVaR-VQE method, results, scaling analysis, and limitations.
@@ -320,6 +368,7 @@ The challenge lists three optional advanced tasks. Status in this repo:
 - 🌐 **[Live interactive demo](https://harold-ohandja.github.io/Moderna-Quantum-RNA-/)** — no-install web explainer of the results.
 
 ---
+
 
 ## References
 
