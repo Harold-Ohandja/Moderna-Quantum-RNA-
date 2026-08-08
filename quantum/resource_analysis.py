@@ -1,7 +1,7 @@
 """
 Quantum Resource and Scaling Analysis Module .
 Evaluates qubit count, circuit depth, QUBO variables, and runtime scaling.
-Identifies memory limits where local statevector simulation becomes impractical.
+Identifies the qubit threshold we adopt for fast local statevector simulation.
 """
 
 import json
@@ -66,7 +66,7 @@ def run_scaling_analysis(
 
         # Determine Simulation Feasibility
         if num_qubits > sim_threshold_qubits:
-            status = f"Simulation Impractical (> {sim_threshold_qubits} Qubits)"
+            status = f"Above fast-sim threshold (> {sim_threshold_qubits} qubits)"
         else:
             status = "Feasible for Local Simulation"
 
@@ -115,7 +115,7 @@ def generate_scaling_plots(json_path: str = "data/results/scaling_data.json"):
     # Plot 1: Sequence Length vs Qubit Count (# Variables)
     plt.figure(figsize=(8, 5))
     plt.plot(lengths, qubits, marker="o", color="#0A285F", linewidth=2.5, label="Qubits (Candidate Pairs)")
-    plt.axhline(y=16, color="red", linestyle="--", linewidth=1.5, label="Local Sim Limit (16 Qubits)")
+    plt.axhline(y=16, color="red", linestyle="--", linewidth=1.5, label="Fast-sim threshold (16 qubits, chosen)")
     plt.xlabel("RNA Sequence Length (nucleotides)", fontsize=11, fontweight="bold")
     plt.ylabel("Required Qubits / Binary Variables", fontsize=11, fontweight="bold")
     plt.title("Quantum Variable Scaling vs. RNA Length", fontsize=13, fontweight="bold", pad=12)

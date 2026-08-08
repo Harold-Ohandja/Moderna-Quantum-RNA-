@@ -6,7 +6,7 @@
     "num_qubits": 2,
     "circuit_depth": 5,
     "qubo_terms_count": 3,
-    "formulation_time_sec": 0.01394,
+    "formulation_time_sec": 0.01285,
     "status": "Feasible for Local Simulation"
   },
   {
@@ -16,7 +16,7 @@
     "num_qubits": 4,
     "circuit_depth": 8,
     "qubo_terms_count": 10,
-    "formulation_time_sec": 0.00323,
+    "formulation_time_sec": 0.00104,
     "status": "Feasible for Local Simulation"
   },
   {
@@ -26,7 +26,7 @@
     "num_qubits": 9,
     "circuit_depth": 13,
     "qubo_terms_count": 41,
-    "formulation_time_sec": 0.01243,
+    "formulation_time_sec": 0.00268,
     "status": "Feasible for Local Simulation"
   },
   {
@@ -36,7 +36,7 @@
     "num_qubits": 9,
     "circuit_depth": 13,
     "qubo_terms_count": 37,
-    "formulation_time_sec": 0.01034,
+    "formulation_time_sec": 0.00516,
     "status": "Feasible for Local Simulation"
   },
   {
@@ -46,8 +46,8 @@
     "num_qubits": 19,
     "circuit_depth": 23,
     "qubo_terms_count": 146,
-    "formulation_time_sec": 0.04476,
-    "status": "Simulation Impractical (> 16 Qubits)"
+    "formulation_time_sec": 0.01289,
+    "status": "Above fast-sim threshold (> 16 qubits)"
   },
   {
     "sequence_length": 16,
@@ -56,8 +56,8 @@
     "num_qubits": 30,
     "circuit_depth": 34,
     "qubo_terms_count": 382,
-    "formulation_time_sec": 0.09087,
-    "status": "Simulation Impractical (> 16 Qubits)"
+    "formulation_time_sec": 0.03766,
+    "status": "Above fast-sim threshold (> 16 qubits)"
   },
   {
     "sequence_length": 18,
@@ -66,8 +66,8 @@
     "num_qubits": 37,
     "circuit_depth": 41,
     "qubo_terms_count": 475,
-    "formulation_time_sec": 0.10361,
-    "status": "Simulation Impractical (> 16 Qubits)"
+    "formulation_time_sec": 0.09763,
+    "status": "Above fast-sim threshold (> 16 qubits)"
   },
   {
     "sequence_length": 20,
@@ -76,8 +76,8 @@
     "num_qubits": 36,
     "circuit_depth": 40,
     "qubo_terms_count": 464,
-    "formulation_time_sec": 0.09248,
-    "status": "Simulation Impractical (> 16 Qubits)"
+    "formulation_time_sec": 0.08073,
+    "status": "Above fast-sim threshold (> 16 qubits)"
   },
   {
     "sequence_length": 22,
@@ -86,8 +86,8 @@
     "num_qubits": 48,
     "circuit_depth": 52,
     "qubo_terms_count": 768,
-    "formulation_time_sec": 0.15478,
-    "status": "Simulation Impractical (> 16 Qubits)"
+    "formulation_time_sec": 0.09686,
+    "status": "Above fast-sim threshold (> 16 qubits)"
   },
   {
     "sequence_length": 24,
@@ -96,7 +96,7 @@
     "num_qubits": 78,
     "circuit_depth": 82,
     "qubo_terms_count": 1934,
-    "formulation_time_sec": 0.71895,
-    "status": "Simulation Impractical (> 16 Qubits)"
+    "formulation_time_sec": 0.3969,
+    "status": "Above fast-sim threshold (> 16 qubits)"
   }
 ]
