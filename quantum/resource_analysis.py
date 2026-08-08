@@ -54,9 +54,15 @@ def run_scaling_analysis(
         
         build_time = time.time() - start_time
         
-        # 3. Circuit Depth Estimation (n_local ansatz, RY+CZ, reps=2 -- see quantum/vqe_solver.py)
+        # 3. Circuit Depth (measured from the actual n_local ansatz, RY+CZ, reps=2  -- see quantum/vqe_solver.py)
         # Depth formula for n_local(ry, cz, linear, reps=2): ~ 2 * 2 + 1 = 5 layers
-        estimated_depth = 5 if num_qubits > 0 else 0
+        if num_qubits > 0:
+            from qiskit.circuit.library import n_local
+            from qiskit import transpile
+            _ansatz = n_local(num_qubits, ["ry"], ["cz"], entanglement="linear", reps=2)
+            measured_depth = transpile(_ansatz, basis_gates=["ry", "cz"], optimization_level=0).depth()
+        else:
+            measured_depth = 0
 
         # Determine Simulation Feasibility
         if num_qubits > sim_threshold_qubits:

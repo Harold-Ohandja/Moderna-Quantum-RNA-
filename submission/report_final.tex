@@ -70,8 +70,8 @@
 		\vspace{2.5cm}
 		
 		{\large\bfseries Team}\\[0.3cm]
-		{\large Pushkar Kumar --- Lead: Quantum/ML Formulation \& Implementation}\\[0.15cm]
-		{\large Harold Ohandja --- Classical Solvers, Benchmark Automation \& Resource Analysis}
+		{\large Pushkar Kumar --- Quantum Solver Implementation \& Benchmarking}\\[0.15cm]
+		{\large Harold Ohandja --- QUBO Formulation, Project Direction \& Resource Analysis}
 		
 		\vspace{2.5cm}
 		
@@ -512,17 +512,17 @@
 	\begin{figure}[htbp]
 		\centering
 		\includegraphics[width=0.85\textwidth]{scaling_qubits_depth.png}
-		\caption{Empirically measured qubit count (candidate-pair count) versus RNA sequence length on random sequences. The dashed line marks the practical local statevector-simulation limit of about 16 qubits; the curve crosses it between 12 and 14 nucleotides. The non-monotonic behavior around 20 nt reflects the random sequence composition at each length.}
+		\caption{Empirically measured qubit count (candidate-pair count) versus RNA sequence length on random sequences. The dashed line marks the roughly 16-qubit threshold we adopted for fast local simulation in this project (not a hard memory limit); the curve crosses it between 12 and 14 nucleotides. The non-monotonic behavior around 20 nt reflects the random sequence composition at each length.}
 		\label{fig:scaling}
 	\end{figure}
 	
 	\subsection{Interpretation: Theory vs. Empirical}
 	
-	The two views tell a consistent story. The theoretical bound establishes that $N$ can in principle grow as $\mathcal{O}(L^2)$, but the empirical measurement shows that on real sequences the count rises more gently and irregularly, dominated by how many canonical pairs happen to be compatible. Both agree on the practically important conclusion: candidate-pair counts cross the roughly 16-qubit ceiling for exact local statevector simulation at quite short lengths (around 12--14 nt in the measured run), which is why the quantum solvers in this project are demonstrated on 3--10 qubit instances and larger sequences are handled only by the classical heuristic baseline.
+	The two views tell a consistent story. The theoretical bound establishes that $N$ can in principle grow as $\mathcal{O}(L^2)$, but the empirical measurement shows that on real sequences the count rises more gently and irregularly, dominated by how many canonical pairs happen to be compatible. We restricted our quantum experiments to roughly $\le 16$ qubits to keep local statevector simulation fast on modest hardware; this is a practical project constraint, not a hard memory limit, since exact statevector simulation remains feasible to approximately 30 qubits (16~GB). The deeper scaling constraint is the one-qubit-per-candidate-pair encoding itself, which reaches 87 qubits at 23~nt and points to a stem-level encoding as the key improvement for longer sequences. Because the demonstrated instances are small, the sampler explores most of the state space, so the reported results should be read as feasibility demonstrations rather than as evidence of quantum optimization advantage.
 	
 	\subsection{Circuit Depth and Gate Scaling}
 	
-	Using the hardware-efficient \texttt{n\_local} ansatz, depth and gate counts scale linearly with $N$:
+	Using the hardware-efficient \texttt{n\_local} ansatz, circuit depth and gate counts scale linearly with $N$. The depth reported by \texttt{quantum/resource\_analysis.py} is measured directly by transpiling the ansatz to the $\{R_y, \text{CZ}\}$ basis (rather than assumed), and grows from 5 layers at $N=2$ to 82 layers at $N=78$, consistent with the linear expectation below:
 	\begin{itemize}[leftmargin=1.2cm]
 		\item \textbf{Single-Qubit Gates ($R_y$):} $N \cdot (d+1) = 3N$ for depth $d = 2$.
 		\item \textbf{Two-Qubit Gates ($\text{CZ}$):} $d \cdot (N-1) = 2(N-1)$ under linear entanglement.
@@ -595,8 +595,8 @@
 	
 	\subsection{Team Contributions}
 	\begin{itemize}[leftmargin=1.2cm]
-		\item \textbf{Pushkar Kumar:} Quantum/ML implementation lead --- QUBO and Ising formulation, CVaR-VQE and QAOA solver implementation, benchmarking notebooks, noise-robustness study, and the interactive web explainer.
-		\item \textbf{Harold Ohandja:} Classical solver track --- exact brute-force and greedy heuristic baselines, benchmark automation, resource and scaling analysis, and report authorship.
+		\item \textbf{Pushkar Kumar:} Quantum solver implementation (CVaR-VQE, QAOA), classical baseline solvers (brute-force and greedy heuristic), benchmarking notebooks and the unified comparison, the noise-robustness study, the interactive web explainer, and report preparation.
+		\item \textbf{Harold Ohandja:} QUBO/Ising formulation and core modules, project direction and roadmap, quantum resource and scaling analysis, and benchmark tooling.
 	\end{itemize}
 	
 	% =========================================================

@@ -16,8 +16,8 @@ A one-page, no-install walkthrough of what this project does and what we found, 
 
 ## Team & Contributions
 
-- **Pushkar Kumar** (pushkarkumar0997@gmail.com) — Quantum implementation lead. Designed the QUBO and Ising formulation, implemented the CVaR-VQE and QAOA solvers, built the benchmarking notebooks and the unified comparison, ran the noise-robustness study, and created the live interactive web explainer.
-- **Harold Ohandja** (harold.ohandja@aims-cameroon.org) — Classical solver track. Implemented the exact brute-force and greedy heuristic baselines, built the benchmark automation, produced the resource and scaling analysis, and authored the technical report.
+- **Pushkar Kumar** (pushkarkumar0997@gmail.com) — Quantum solver implementation (CVaR-VQE, QAOA), classical baseline solvers (brute-force and greedy heuristic), benchmarking notebooks and the unified comparison, the noise-robustness study, the interactive web explainer and report preparation completion.
+- **Harold Ohandja** (harold.ohandja@aims-cameroon.org) — QUBO/Ising formulation and core modules, project direction and roadmap, quantum resource and scaling analysis,interactive web explainer ideation, report initialization and benchmark tooling.
 
 ---
 
@@ -347,7 +347,7 @@ We report limitations openly, since understanding them is part of an honest benc
 
 **Limitations:**
 - **Simplified energy model (the formulation gap).** Our QUBO rewards any valid base pair with a constant bias and omits sequence-length-dependent loop-entropy penalties. On some sequences this causes it to predict pairings that real thermodynamics would reject — and because exact brute force fails identically, the limitation is in the model, not the optimiser.
-- **Small instances only.** Candidate-pair counts cross the ~16-qubit local statevector-simulation ceiling at around 12–14 nt, so the quantum solvers are demonstrated on 3–10 qubit cases; larger sequences are handled only by the classical heuristic baseline.
+- **Small instances only.** We restricted quantum experiments to roughly ≤16 qubits to keep local statevector simulation fast on modest hardware — a practical choice for this project, not a hard memory limit (exact simulation remains feasible to about 30 qubits). The deeper scaling constraint is our one-qubit-per-candidate-pair encoding, which reaches 87 qubits at 23 nt; a stem-level encoding would scale much further. Because these instances are small, the sampler explores most of the state space, so results should be read as feasibility demonstrations rather than evidence of quantum optimization advantage.
 - **Scaling uses random sequences.** The empirical scaling figures are generated on randomly sampled sequences, so exact per-length qubit counts vary between runs; the growth trend, not any single point, is the result.
 - **Noise study is a single instance.** Robustness was verified on one small (7-qubit), shallow-circuit sequence. It should not be extrapolated to larger sequences.
 - **Encoding comparison is partial.** We compare CVaR-VQE and QAOA over one shared QUBO encoding; a comparison of genuinely different encodings remains open.
