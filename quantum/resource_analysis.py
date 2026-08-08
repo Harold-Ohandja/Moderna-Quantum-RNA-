@@ -75,7 +75,7 @@ def run_scaling_analysis(
             "sequence": sequence,
             "num_candidate_pairs": num_variables,
             "num_qubits": num_qubits,
-            "estimated_circuit_depth": estimated_depth,
+            "circuit_depth": measured_depth,
             "qubo_terms_count": len(qubo_dict),
             "formulation_time_sec": round(build_time, 5),
             "status": status
